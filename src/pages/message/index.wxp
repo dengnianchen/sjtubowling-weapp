@@ -1,0 +1,16 @@
+<template>
+  <view>Message Page</view>
+</template>
+
+<script>
+export default {
+  config: {
+    navigationBarTitleText: '站内信',
+    usingComponents: {}
+  },
+  data: {}
+}
+</script>
+
+<style>
+</style>

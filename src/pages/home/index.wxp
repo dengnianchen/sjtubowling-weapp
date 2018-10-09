@@ -1,0 +1,298 @@
+<template>
+	<view class="home">
+		<view class="home-banner" style="background-image: url({{bannerImageUrl}})">
+			<view class="home-banner__now">现在是{{term.name}}第{{week}}周</view>
+		</view>
+		<view class="app-panel margin-bottom" style="border-top:none;">
+			<app-list wx:for="{{topMenu}}" wx:key="index"
+			          id="topmenu-{{index}}" title="{{item.title}}"
+			          desc="{{item.desc}}" icon="{{item.icon}}"
+			          dot="{{item.dot}}"
+			          mode="{{index===topMenu.length-1?'none':''}}"
+			          bind:click="onTopMenuItemClick"
+			></app-list>
+		</view>
+		<view class="app-panel margin-bottom">
+			<view class="app-panel__title">最新例会记录{{post?' - ':''}}{{post.title}}</view>
+			<view wx:if="{{post}}" class="app-panel__content post-content">
+				<text>{{post.content}}</text>
+			</view>
+			<app-abnor wx:else error="ERR_NO_NEWEST_POST"></app-abnor>
+		</view>
+		<view class="app-panel margin-bottom">
+			<view class="app-panel__title">排班表 - 第{{week}}周</view>
+			<view wx:if="{{schedule}}" class="app-panel__content schedule-table">
+				<view class="schedule-table__row {{classinfo.myclass?'schedule-table__row-my':''}}"
+				      wx:if="{{schedule}}" wx:for="{{schedule.classes}}"
+				      wx:key="name" wx:for-item="classinfo">
+					<view class="schedule-table__row-1">
+						<text id="class-name">{{classinfo.name}}</text>
+						<text id="class-time">{{classinfo.time}}</text>
+						<text id="class-manager">{{classinfo.manager_name}}</text>
+					</view>
+					<view class="schedule-table__row-2">
+						员工：
+						<block wx:for="{{classinfo.staffs}}" wx:key="uid"
+						       wx:for-item="staff">
+							{{index === 0 ? "" : "，"}}{{staff.staff_name}}
+						</block>
+					</view>
+					<view class="schedule-table__row-icon" wx:if="{{classinfo.myclass}}">
+						<view class="fas fa-circle"></view>
+					</view>
+				</view>
+			</view>
+			<app-abnor wx:else error="ERR_NO_SCHEDULE_THIS_WEEK"></app-abnor>
+		</view>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	const config = require('../../config');
+	
+	export default {
+		auth: true,
+		
+		config: {
+			usingComponents: {
+				'app-abnor': '../../common/component/abnor',
+				'app-list': '../../common/component/list'
+			},
+			"navigationBarBackgroundColor": "#002A54",
+			"navigationBarTextStyle": "white",
+			"enablePullDownRefresh": true
+		},
+		
+		/**
+		 * 页面的初始数据
+		 */
+		data: {
+			term: null,
+			schedule: null,
+			bannerImageUrl: `${config.publicUrl}/img/banner.jpg`,
+			topMenu: [
+				{
+					title: '投票',
+					icon: 'fas fa-clipboard-check',
+					desc: '',
+					action: () => {
+						wx.navigateTo({
+							url: '/pages/voteList/index',
+						});
+					}
+				},
+				{
+					title: '优秀榜',
+					icon: 'fas fa-thumbs-up',
+					desc: '建设中……',
+					action: () => {
+						return;
+						wx.navigateTo({
+							url: '/pages/user/index',
+						});
+					}
+				},
+				{
+					title: '生日报告区',
+					icon: 'fas fa-birthday-cake',
+					desc: '建设中……',
+					action: () => {
+						return;
+						wx.navigateTo({
+							url: '/pages/user/index',
+						});
+					}
+				}
+			]
+		},
+		
+		/**
+		 * 生命周期函数--监听页面加载
+		 */
+		onLoad() {
+			return this.refreshPage();
+		},
+		
+		onShow() {
+			this.onLoad();
+		},
+		
+		onPullDownRefresh() {
+			this.refreshPage().then(() => {
+				wx.stopPullDownRefresh();
+			}).catch(ex => {
+				wx.stopPullDownRefresh();
+				this.setData({ loadingError: ex });
+			});
+		},
+		
+		refreshPage() {
+			return util.request('/common/term').then(term => {
+				this.setData({
+					term: term,
+					week: util.getWeekNumber(term.begin_date)
+				});
+				
+				// Request brief info for top menu
+				util.request('/vote/visible').then(votes => {
+					if (votes.length)
+						this.data.topMenu[0].desc = `正在进行${votes.length}项投票`;
+					let hasUnvoted = false;
+					for (let vote of votes)
+						if (!vote.is_voted) {
+							hasUnvoted = true;
+							break;
+						}
+					this.data.topMenu[0].dot = hasUnvoted;
+					this.setData({ topMenu: this.data.topMenu });
+				}).catch(ex => {
+					this.data.topMenu[0].desc = "";
+					this.data.topMenu[0].dot = false;
+					this.setData({ topMenu: this.data.topMenu });
+				});
+				
+				// Request post and schedule
+				return Promise.all([
+					util.request(`/schedule/public/${this.data.week}`).then(schedule => {
+						if (schedule) {
+							this.sortSchedule(schedule);
+							this.markMyClass(schedule);
+						}
+						this.setData({ schedule: schedule });
+					}),
+					util.request('/post/normal').then(post => {
+						this.setData({ post: post });
+					})
+				]);
+			});
+		},
+		
+		markMyClass(schedule) {
+			for (let classinfo of schedule.classes)
+				classinfo.myclass = this.isClassContainStaff(classinfo,
+					this.data.suser.uid);
+		},
+		
+		sortSchedule(schedule) {
+			schedule.classes.sort((a, b) => a.weekday - b.weekday);
+		},
+		
+		isClassContainStaff(classinfo, uid) {
+			if (classinfo.manager_id === uid)
+				return true;
+			for (let staff of classinfo.staffs)
+				if (staff.uid === uid)
+					return true;
+			return false;
+		},
+		
+		onTopMenuItemClick(e) {
+			util.submit(e);
+			const idSplited = e.target.id.split('-');
+			const menuId = parseInt(idSplited[1]);
+			const action = this.data.topMenu[menuId].action;
+			if (action !== undefined)
+				action.call(this);
+		},
+	}
+</script>
+
+<style lang="less">
+	@import "../../style";
+	
+	.home {
+		display: flex;
+		flex-direction: column;
+	}
+	.home-banner {
+		position: relative;
+		width: 100%;
+		height: 240px;
+		background-size: 750px 240px;
+		background-position: center;
+	}
+	.home-banner__now {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		text-align: right;
+		padding: 20px;
+		color: white;
+		font-size: 36px;
+		text-shadow: -3px 0 10px #000000,
+			3px 0 10px #000000,
+			0 -3px 10px #000000,
+			0 3px 10px #000000;
+	}
+	.post-content {
+		padding-right: 30px;
+		padding-top: 20px;
+		padding-bottom: 20px;
+		font-size: @fontSize__desc;
+	}
+	.schedule-table__row {
+		position: relative;
+		padding: 15px 60px 15px 0;
+	}
+	.schedule-table__row::after {
+		content: " ";
+		position: absolute;
+		left: 0px;
+		bottom: 0;
+		right: 0;
+		height: 1px;
+		border-bottom: @splitLineColor solid 1px;
+		color: @splitLineColor;
+	}
+	.schedule-table__row:last-child::after {
+		content: none;
+		border-bottom: none;
+	}
+	.schedule-table__row-my {
+		background: linear-gradient(to right, #FFF 25%, @warnBackgroundColor);
+	}
+	
+	.schedule-table__row-1 {
+		display: flex;
+		font-size: 32px;
+		margin-bottom: 15px;
+		
+		#class-name {
+			width: 6.5em;
+			margin-right: 0.5em;
+			flex-grow: 0;
+		}
+		
+		#class-time {
+			flex-grow: 1;
+		}
+		
+		#class-manager {
+			flex-grow: 0;
+		}
+	}
+	
+	.schedule-table__row-2 {
+		font-size: 26px;
+		color: @subHeadingColor;
+		display: flex;
+	}
+	
+	.schedule-table__row-icon {
+		display: flex;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 60px;
+		align-items: center;
+		justify-content: center;
+		color: @successColor;
+		
+		view {
+			font-size: 0.5em;
+		}
+	}
+	
+</style>

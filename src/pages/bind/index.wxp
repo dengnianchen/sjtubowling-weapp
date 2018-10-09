@@ -1,0 +1,193 @@
+<template>
+	<view class="bind-title">欢迎来到上海交通大学保龄球馆员工之家</view>
+	<view class="bind-subtitle">首次使用需绑定球馆账号</view>
+	<view class="app-panel">
+		<view class="app-panel__content bind-form">
+			<wxc-input id="bind-name" type="text" title="用户名"
+			           disabled="{{bindInProcess}}" placeholder="请输入用户名"
+			           bind:blur="onInputBlur" bind:confirm="switchToPasswordInput"></wxc-input>
+			<wxc-input id="bind-password" type="password" title="密码"
+			           disabled="{{bindInProcess}}" placeholder="请输入密码"
+			           bind:blur="onInputBlur" focus="{{focusPassword}}"></wxc-input>
+			<wxc-button size="large" value="绑定" loading="{{bindInProcess}}"
+			            type="{{bindInProcess?'disabled':'primary'}}"
+			            open-type='getUserInfo' bindgetuserinfo='doLoginAndBind'></wxc-button>
+		</view>
+	</view>
+	<view class="bind-foot">忘记密码请联系人事组同学</view>
+</template>
+
+<script>
+	const qcloud = require('../../vendor/wafer2-client-sdk/index');
+	const config = require('../../config');
+	const util = require('../../utils/index');
+	
+	export default {
+		
+		config: {
+			usingComponents: {
+				'wxc-button': '@minui/wxc-button',
+				'wxc-input': '@minui/wxc-input',
+				'wxc-icon': '@minui/wxc-icon'
+			}
+		},
+		
+		data: {
+			skipTemplate: true,
+			login: false,
+			bindInProcess: false,
+			focusPassword: false,
+			userInfo: {},
+			bindForm: {},
+		},
+		
+		onLoad(options) {
+			this.setData(options);
+			return new Promise((resolve, reject) => {
+				// 尝试仅使用code登陆并获取绑定信息，若成功则直接登录成功，跳回原页面
+				qcloud.loginWithCode({
+					success: res => { // 登录成功
+						// 若当前微信已绑定用户，则直接回到来源页面
+						if (qcloud.Session.get().user != null) {
+							this.redirectBack();
+							return;
+						}
+						this.setData({ login: true });
+						resolve();
+					},
+					fail: err => { // 登录失败，后续将使用授权登录方式
+						console.error(err);
+						this.setData({ login: false });
+						resolve();
+					}
+				});
+			})
+			
+		},
+		
+		onInputBlur(e) {
+			// 当输入框失去焦点时，获取输入值并填入相应表单的数据集中
+			// 输入框的id格式为：[表单名]-[字段名]
+			const inputIdSplited = e.target.id.split("-");
+			const formName = inputIdSplited[0] + "Form";
+			const field = inputIdSplited[1];
+			const formData = this.data[formName];
+			formData[field] = e.detail.value;
+			const setDataParam = {};
+			setDataParam[formName] = formData;
+			this.setData(setDataParam);
+		},
+		
+		switchToPasswordInput() {
+			this.setData({focusPassword: true});
+		},
+		
+		/**
+		 * 尝试授权登录，然后执行微信与球馆用户的绑定操作
+		 */
+		doLoginAndBind() {
+			this.setData({bindInProcess: true});
+			
+			if (this.data.login) {
+				// 已经成功登录，仅执行绑定操作
+				this.doBind();
+			} else {
+				// 进行授权方式登录（若未曾收授权，用户会收到授权提示）
+				qcloud.login({
+					success: res => { // 登录成功
+						this.setData({login: true});
+						// 执行绑定操作
+						this.doBind();
+					},
+					fail: err => { // 登录失败
+						util.showError('登录错误', err);
+						this.setData({bindInProcess: false});
+					}
+				})
+			}
+			
+		},
+		
+		/**
+		 * 执行微信与球馆用户的绑定操作，绑定成功后在会话中添加球馆用户信息并跳转至来源页面
+		 */
+		doBind() {
+			// 获取提交参数并校验
+			let params = this.data.bindForm;
+			if (params.name === undefined || params.name === ""
+				|| params.password === undefined || params.password === "") {
+				util.showError('绑定失败', "用户名或密码不能为空");
+				this.setData({bindInProcess: false});
+				return;
+			}
+			// 对密码字段进行加密
+			params.password = util.md5(params.password);
+			
+			// 提交绑定请求
+			qcloud.request({
+				url: `${config.service.host}/weapp/user/bind`,
+				login: true,
+				data: params,
+				method: "PUT",
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
+				},
+				success: result => { //绑定成功
+					util.showSuccess('绑定成功！');
+					// 设置session.user并跳转回原页面
+					let session = qcloud.Session.get();
+					session.user = result.data.data;
+					qcloud.Session.set(session);
+					this.redirectBack();
+				},
+				fail: ex => { // 绑定失败
+					util.showError('绑定失败', ex);
+					this.setData({bindInProcess: false});
+				}
+			})
+		},
+		
+		/**
+		 * 跳转至来源页面（由data.from指定）
+		 */
+		redirectBack() {
+			wx.reLaunch({
+				url: "/" + decodeURIComponent(this.data.from)
+			})
+		}
+		
+	}
+</script>
+
+<style lang="less">
+	@import "../../style";
+	
+	.bind-title {
+		font-size: 36px;
+		text-align: center;
+		margin-top: 36px;
+		margin-bottom: 0.5em;
+		color: @mainHeadingColor;
+	}
+	
+	.bind-subtitle {
+		font-size: 28px;
+		margin-bottom: 36px;
+		text-align: center;
+		color: @subHeadingColor;
+	}
+	.bind-form {
+		padding: 15px 30px 30px 30px;
+		
+		#bind-password::after {
+			display: block;
+			content: "";
+			height: 15rpx;
+		}
+	}
+	.bind-foot {
+		font-size: @fontSize__subDesc;
+		text-align: center;
+		color: @subHeadingColor;
+	}
+</style>

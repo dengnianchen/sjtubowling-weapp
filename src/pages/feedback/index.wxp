@@ -1,0 +1,77 @@
+<template>
+	<view class="feedback-page">
+		<view class="app-panel margin-bottom {{textfieldError?'error':''}}">
+			<view class="app-panel__content">
+				<textarea name="content" auto-focus="{{true}}"
+				          focus="{{textfieldError}}"
+				          bindinput="onTextInput"
+				          placeholder="请输入建议"></textarea>
+			</view>
+		</view>
+		<view class="large-btn-wrapper">
+			<wxc-button size="large" value="提交" loading="{{saveInProcess}}"
+			            type="{{submitInProcess?'disabled':'primary'}}"
+			            bind:submit="submitFeedback"></wxc-button>
+		</view>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	
+	export default {
+		auth: true,
+		content: '',
+		
+		config: {
+			navigationBarTitleText: '建议反馈',
+			usingComponents: {
+				'wxc-button': '@minui/wxc-button',
+			},
+		},
+		
+		data: {
+			textfieldError: false,
+			submitInProcess: false,
+		},
+		
+		onTextInput(e) {
+			this.content = e.detail.value;
+		},
+		
+		submitFeedback(e) {
+			if (this.content === '') {
+				this.setData({ textfieldError: true });
+				return;
+			}
+			this.setData({ textfieldError: false });
+			util.submit(e, 'PUT /feedback', { content: this.content }).then(() => {
+				wx.redirectTo({
+					url: '../success/index?desc=建议反馈已提交，感谢您对开发组的支持！',
+				});
+			}).catch(ex => {
+				util.showError('提交失败', ex);
+				console.log('提交失败', ex);
+				this.setData({ submitInProcess: false });
+			});
+		},
+		
+	};
+</script>
+
+<style lang="less">
+	.feedback-page {
+		padding-top: 30px;
+		.app-panel.error {
+			border-color: #ff3333;
+			background: #fff2f2;
+		}
+		.app-panel__content {
+			padding: 15px 30px;
+		}
+		textarea {
+			display: block;
+			width: 100%;
+		}
+	}
+</style>

@@ -1,0 +1,48 @@
+<template>
+	<app-label wx:if="{{item.position===1}}" class="label"
+	           type-color="{{colors.manager}}"
+	           type="fill" text="经理"></app-label>
+	<app-label wx:if="{{item.position===2}}" class="label"
+	           type-color="{{colors.supervisor}}"
+	           type="fill" text="副主管"></app-label>
+	<app-label wx:if="{{item.position===3}}" class="label"
+	           type-color="{{colors.supervisor}}"
+	           type="fill" text="主管"></app-label>
+	<app-label wx:if="{{item.adminteam===1}}" class="label"
+	           type-color="{{colors.manageGroup}}"
+	           type="fill" text="管理小组"></app-label>
+	<app-label wx:if="{{item.hr===1}}" class="label"
+	           type-color="{{colors.hr}}"
+	           type="fill" text="人事组"></app-label>
+	<app-label wx:if="{{item.webadmin===1}}" class="label"
+	           type-color="{{colors.webadmin}}"
+	           type="fill" text="网站管理"></app-label>
+	<app-label wx:if="{{item.intern===1}}" class="label"
+	           type-color="{{colors.intern}}"
+	           type="fill" text="实习"></app-label>
+	<app-label wx:if="{{item.active===0}}" class="label"
+	           type-color="{{colors.leave}}"
+	           type="fill" text="离职"></app-label>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {
+				'app-label': './label',
+			}
+		},
+		behaviors: [ ],
+		properties: {
+			item: Object,
+			colors: Object
+		},
+	}
+</script>
+
+<style lang="pcss">
+	.label::after {
+		content: " ";
+		width: 3px;
+	}
+</style>

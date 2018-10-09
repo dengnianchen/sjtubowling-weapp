@@ -1,0 +1,236 @@
+<template xmlns:wx="http://www.w3.org/1999/xhtml">
+	<form wx:if="{{!cropper.src&&!loadingPicture}}" bindsubmit="selectPicture" report-submit="{{true}}">
+		<button class="fake-button cropper-overlay" form-type="submit">点击以选择图片</button>
+	</form>
+	<view wx:if="{{loadingPicture}}" class="cropper-overlay"></view>
+	<canvas wx:if="{{cropper.src&&!loadingPicture}}"
+	        canvas-id="{{cropper.id}}" class="cropper"
+	        disable-scroll="true"
+	        style="width:{{cropper.width}}px;height:{{cropper.height}}px;background-color: rgba(0, 0, 0, 0.8)"
+	        bindtouchstart="touchStart"
+	        bindtouchmove="touchMove"
+	        bindtouchend="touchEnd"
+	></canvas>
+	<canvas canvas-id="canvas-for-scale" class="canvas-for-scale"
+	        style="width:{{maxWidth}}px;height:{{maxHeight}}px"
+	></canvas>
+	<view class="cropper-buttons">
+		<view class="upload">
+			<form bindsubmit="selectPicture" report-submit="{{true}}">
+				<button class="fake-button" form-type="submit">重新选择</button>
+			</form>
+		</view>
+		<view class="getCropperImage">
+			<form bindsubmit="uploadAvatar" report-submit="{{true}}">
+				<button class="fake-button" form-type="submit">确定</button>
+			</form>
+		</view>
+	</view>
+
+</template>
+
+<script>
+	import WeCropper from '../../vendor/we-cropper/we-cropper';
+	
+	const util = require('../../utils/index');
+	const qcloud = require('../../vendor/wafer2-client-sdk/index');
+	
+	let ctxForScale = null;
+	
+	export default {
+		auth: true,
+		
+		config: {
+			navigationBarTitleText: '修改头像',
+			usingComponents: {},
+		},
+		
+		data: {
+			cropper: {
+				id: 'cropper'
+			},
+			maxWidth: 1200,
+			maxHeight: 1200
+		},
+		
+		onLoad() {
+			const canvasWidth = util.getScreenSize('px').x;
+			const canvasHeight = util.getScreenSize('px').y - util.rpx2px(100);
+			const cutWidth = util.rpx2px(600);
+			const cutHeight = util.rpx2px(600);
+			const cropper = {
+				id: 'cropper',
+				width: canvasWidth,
+				height: canvasHeight,
+				scale: 2.5,
+				zoom: 8,
+				cut: {
+					x: (canvasWidth - cutWidth) / 2,
+					y: (canvasHeight - cutHeight) / 2,
+					width: cutWidth,
+					height: cutHeight,
+				}
+			};
+			this.setData({ cropper });
+			
+			// 初始化WeCropper插件
+			this.wecropper = new WeCropper(cropper).on('ready', ctx => {
+				console.log(`wecropper is ready for work!`);
+			}).on('imageLoad', ctx => {
+				this.setData({ loadingPicture: false });
+				util.showSuccess('加载完成！');
+			}).updateCanvas();
+			
+			//初始化CanvasForScale
+			ctxForScale = wx.createCanvasContext("canvas-for-scale");
+			
+			return new Promise((resolve, reject) => {
+				wx.showModal({
+					title: '修改头像',
+					content: '为了方便大家认识你，请选择一张带有自己清晰面部的头像哦！',
+					showCancel: false,
+					confirmText: '选择图片',
+					complete: () => resolve()
+				});
+			}).then(() => this.selectPicture());
+		},
+		
+		touchStart(e) {
+			this.wecropper.touchStart(e);
+		},
+		
+		touchMove(e) {
+			this.wecropper.touchMove(e);
+		},
+		
+		touchEnd(e) {
+			this.wecropper.touchEnd(e);
+		},
+		
+		uploadAvatar(e) {
+			this.wecropper.getCropperRegion(region => {
+				util.showBusy('上传中……');
+				util.upload(e, '/user/avatar', this.data.cropper.src,
+					'attachment', region).then(user => {
+					util.showSuccess('上传成功！');
+					util.setCurrentUser(user);
+					setTimeout(() => {
+						if (getApp().globalData.work)
+							getApp().globalData.work.next();
+						else
+							wx.navigateBack();
+					}, 1000);
+				}).catch(ex => {
+					util.showError('上传失败', ex);
+				});
+			});
+		},
+		
+		selectPicture(e) {
+			if (e)
+				util.submit(e);
+			wx.chooseImage({
+				count: 1,
+				success: res => {
+					util.showBusy('加载中……');
+					this.setData({ loadingPicture: true });
+					const imageFile = res.tempFilePaths[0];
+					wx.getImageInfo({
+						src: imageFile,
+						success: res => {
+							// 若原图分辨率足够小，则无需缩放
+							if (res.width <= this.data.maxWidth &&
+								res.height <= this.data.maxHeight) {
+								this._setImage(imageFile, imageFile);
+							}
+							
+							// 计算缩放目标尺寸
+							let targetSize = {
+								width: res.width,
+								height: res.height
+							};
+							if (targetSize.width > this.data.maxWidth) {
+								targetSize = {
+									width: this.data.maxWidth,
+									height: targetSize.height * this.data.maxWidth / targetSize.width
+								};
+							}
+							if (targetSize.height > this.data.maxHeight) {
+								targetSize = {
+									width: targetSize.width * this.data.maxHeight / targetSize.height,
+									height: this.data.maxHeight
+								};
+							}
+							
+							// 绘制图像后获取绘制结果作为新的图像使用
+							ctxForScale.drawImage(imageFile, 0, 0,
+								targetSize.width, targetSize.height);
+							ctxForScale.draw(false, () => {
+								wx.canvasToTempFilePath({
+									canvasId: "canvas-for-scale",
+									width: targetSize.width,
+									height: targetSize.height,
+									destWidth: targetSize.width,
+									destHeight: targetSize.height,
+									success: res => {
+										this._setImage(imageFile, res.tempFilePath);
+									}
+								});
+							});
+							
+						}
+					}); // wx.getImageInfo
+				}
+			});
+		},
+		
+		_setImage(originPath, scaledPath) {
+			const cropper = this.data.cropper;
+			cropper.src = originPath;
+			this.setData({ cropper });
+			this.wecropper.pushOrign(scaledPath);
+		}
+		
+	};
+</script>
+
+<style lang="less">
+	page {
+		background-color: #e5e5e5;
+	}
+	
+	.cropper-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #2E2E2E;
+		color: white;
+		z-index: 100;
+	}
+	
+	.cropper-buttons {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		height: 100px;
+		line-height: 100px;
+		background-color: rgba(0, 0, 0, 0.95);
+		color: #04b00f;
+	}
+	
+	.cropper-buttons .upload, .cropper-buttons .getCropperImage {
+		width: 50%;
+		text-align: center;
+	}
+	
+	.canvas-for-scale {
+		position: fixed;
+		left: 750px;
+		top: 0;
+	}
+</style>

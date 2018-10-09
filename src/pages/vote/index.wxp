@@ -1,0 +1,163 @@
+<template xmlns:wx="http://www.w3.org/1999/XSL/Transform">
+	<view class="page__hd">
+		<view class="page__title">
+			<text class="vote_title" decode="{{true}}">{{vote.name}}</text>
+			<app-votelabels class="vote__label"
+			                item="{{vote}}"
+			                _style="{{global.style}}"
+			></app-votelabels>
+		</view>
+		<view wx:if="{{vote.deadline}}" class="page__desc">投票截止时间：{{vote.deadline}}</view>
+		<view class="page__desc"><text decode="{{true}}">{{vote.description}}</text></view>
+	</view>
+	<view class="page__bd">
+		<view class="vote__tip">
+			<view class="vote__tip-1">点击选项文本可查看附带图片</view>
+			<view wx:if="{{vote.max_select_num}}" class="vote_tip-2">最多可选 {{vote.max_select_num}} 项</view>
+		</view>
+		<app-vote items="{{vote.items}}"
+		          result="{{vote.result}}"
+		          max-select="{{vote.max_select_num}}"
+		          bind:change="onChange"
+		          disabled="{{!vote.status}}"
+		></app-vote>
+		<view wx:if="{{!vote.result}}" class="large-btn-wrapper">
+			<wxc-button size="large" value="{{vote.status?'提交':'已关闭'}}"
+			            loading="{{saveInProcess}}"
+			            type="{{saveInProcess||!vote||!vote.status?'disabled':'primary'}}"
+			            bind:submit='onSubmit'
+			></wxc-button>
+		</view>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	const config = require('../../config');
+	const error = require('../../error');
+	const he = require('he');
+	
+	export default {
+		auth: true,
+		config: {
+			navigationBarTitleText: '投票',
+			usingComponents: {
+				'app-vote': '../../common/component/vote',
+				'app-votelabels': '../../common/component/votelabels',
+				'wxc-button': '@minui/wxc-button'
+			},
+		},
+		data: {
+			voteItems: {}
+		},
+		onLoad(options) {
+			if (options.id === undefined)
+				throw new Error();
+			return util.request(`/vote/${options.id}`).then(vote => {
+				// Check permission
+				if (!this.data.suser.active && !vote.oldstaff_visible)
+					throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅在职员工可见！");
+				if (this.data.suser.position === 0 && !vote.staff_visible)
+					throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅经理可见！");
+				if (this.data.suser.position !== 0 && !vote.manager_visible)
+					throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅员工可见！");
+				
+				// Reorganize items as key-value structure
+				let items = {};
+				for (let item of vote.items) {
+					if (item.picture)
+						item.picture = `${config.storageUrl}/vote/${item.picture}`;
+					items[item.item_id] = item;
+				}
+				vote.items = items;
+				
+				// Set 'expired' if deadline has past
+				if (vote.deadline)
+					vote.expired = new Date () > new Date (vote.deadline);
+				
+				// Convert result of each item from count to percentage
+				if (vote.result) {
+					let result = {};
+					for (let id in vote.result) {
+						if (id !== "all")
+							result[id] = Math.round(vote.result[id] / vote.result["all"] * 100);
+					}
+					vote.result = result;
+				}
+				this.setData({ vote: vote });
+			});
+		},
+		onShareAppMessage(res) {
+			return {
+				title: "投票：" + he.decode(this.data.vote.name),
+				path: this.getPath(),
+				imageUrl: '/images/share-vote.png'
+			}
+		},
+		onChange(e) {
+			this.setData({ voteItems: e.detail.value });
+		},
+		onSubmit(e) {
+			// Validate count of selected
+			let countOfSelected = 0;
+			for (let index in this.data.voteItems)
+				if (this.data.vote.items[index].type === "option")
+					countOfSelected++;
+			if (!countOfSelected) {
+				util.showModel("投票提交失败", "至少选择一个投票项");
+				return;
+			}
+			if (countOfSelected > this.data.vote.maxSelect) {
+				util.showModel("投票提交失败", `最多选择${this.data.vote.maxSelect}个投票项`);
+				return;
+			}
+			
+			// Submit vote
+			const voteId = this.data.vote.id;
+			this.setData ({ saveInProgress: true });
+			util.submit(e, `PUT /vote/${voteId}`, this.data.voteItems).then(() => {
+				// Refresh page to show vote result
+				this.setData({
+					vote: null,
+					saveInProgress: false,
+					voteItems: {}
+				});
+				this.onLoad({ id: voteId });
+			}).catch(ex => {
+				// If the vote is already submitted,
+				// just refresh page (as success callback do)
+				if (ex.type === error.ERR_DUPLICATE_SUBMIT) {
+					this.setData({
+						vote: null,
+						saveInProgress: false,
+						voteItems: {}
+					});
+					this.onLoad({ id: voteId });
+					return;
+				}
+				util.showError("投票提交失败", ex);
+				this.setData ({ saveInProgress: false });
+			});
+		}
+	};
+</script>
+
+<style lang="less">
+	@import "../../style";
+	
+	.vote__label {
+		display: inline;
+		white-space: nowrap;
+		font-size: 0.8em;
+		margin-left: 10px;
+	}
+	.vote__tip {
+		display: flex;
+		margin: 0 15px;
+		font-size: @fontSize__subDesc;
+		color: @color__subDesc;
+	}
+	.vote__tip-1 {
+		flex-grow: 1;
+	}
+</style>

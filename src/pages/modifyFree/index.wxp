@@ -1,0 +1,105 @@
+<template>
+	<wxc-notice class="notice--fixed" notice="{{notice}}" color="#ff5777" bgColor="#ffe8ee"></wxc-notice>
+	<view class="app-panel">
+		<view class="app-panel_content">
+			<app-list wx:for="{{suser.timetable}}" wx:key="name"
+			          wx:for-index="name" wx:for-item="selected"
+			          id="{{name}}" title="{{name}}"
+			          desc="{{weekdays[classConfig[name].weekday-1]}}{{classConfig[name].time}}"
+			          icon="{{selected===1?'fas':'far'}} fa-check-circle"
+			          iconColor="{{selected===1?'#28a745':'#999999'}}"
+			          mode="{{index === suser.timetable.length-1 ? 'none': ''}}"
+			          arrow="{{false}}"
+			          bind:click="onItemClicked"
+			          customStyle="{{selected?'background: linear-gradient(to right, #FFF 50%, #BFFFC9)':''}}"></app-list>
+		</view>
+	</view>
+	<view class="large-btn-wrapper">
+		<wxc-button size="large" value="保存" loading="{{saveInProcess}}"
+		            type="{{suser.active?'primary':'disabled'}}"
+		            bind:submit='save'></wxc-button>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	const enums = require('../../utils/enums');
+	
+	export default {
+		auth: true,
+		
+		config: {
+			navigationBarTitleText: '修改空余时间',
+			usingComponents: {
+				'app-list': '../../common/component/list',
+				'wxc-button': '@minui/wxc-button',
+				'wxc-notice': '@minui/wxc-notice'
+			},
+		},
+		
+		data: {
+			weekdays: enums.weekdays,
+		},
+		
+		onLoad() {
+			if (this.data.suser.active)
+				this.setData({ notice: `请至少勾选${this.data.global.config.timetable_min_selected}个空余时间。` });
+			else
+				this.setData({ notice: "您已离职，无法修改空余时间。" });
+			return util.request('/common/class_config').then(data => {
+				const classConfig = {};
+				for (const item of data)
+					classConfig[item.name] = item;
+				this.setData({ classConfig: classConfig });
+			});
+		},
+		
+		onItemClicked(e) {
+			if (!this.data.suser.active)
+				return;
+			const suser = this.data.suser;
+			suser.timetable[e.target.id] = 1 - suser.timetable[e.target.id];
+			this.setData({ suser });
+		},
+		
+		save(e) {
+			if (!this.data.suser.active)
+				return;
+			let selectedCount = 0;
+			for (let key in this.data.suser.timetable)
+				selectedCount += this.data.suser.timetable[key];
+			const minCount = this.data.global.config.timetable_min_selected;
+			if (selectedCount < minCount) {
+				util.showModel('保存失败', `需要至少勾选${minCount}个空余时间`);
+				return;
+			}
+			util.showBusy("保存中……");
+			util.submit(e, 'POST /user/timetable', this.data.suser.timetable).then(user => {
+				util.showSuccess("保存成功！");
+				util.setCurrentUser(user);
+				setTimeout(() => {
+					if (getApp().globalData.work)
+						getApp().globalData.work.next();
+					else
+						wx.navigateBack();
+				}, 1000);
+			}).catch(ex => {
+				util.showError('保存失败', ex);
+			});
+		}
+		
+	};
+</script>
+
+<style lang="less">
+	page {
+		padding-top: 70px;
+	}
+	.notice--fixed {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		z-index: 100;
+	}
+</style>

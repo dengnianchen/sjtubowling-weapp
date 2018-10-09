@@ -1,0 +1,49 @@
+{
+	"miniprogramRoot": "dist/",
+	"description": "项目配置文件。",
+	"compileType": "miniprogram",
+	"libVersion": "2.3.0",
+	"appid": "wx94170a99fa2b88cc",
+	"projectname": "sjtubowling-min",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true
+	},
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": 0,
+			"list": [
+				{
+					"id": 0,
+					"name": "投票页面",
+					"pathName": "pages/vote/index",
+					"query": "id=14"
+				},
+				{
+					"id": -1,
+					"name": "投票列表",
+					"pathName": "pages/voteList/index",
+					"query": ""
+				}
+			]
+		}
+	}
+}

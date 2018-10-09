@@ -1,0 +1,78 @@
+<template>
+	<view>
+		<block wx:for="{{steps}}" wx:key="index">
+			<view class="step">
+				<app-icon wx:if="{{item.done}}" class="step__icon"
+				          name="fas fa-check-circle" color="{{style.successColor}}"></app-icon>
+				<app-icon wx:else class="step__icon"
+				          name="far fa-circle" color="{{style.darkPromptColor}}"></app-icon>
+				<view class="step__content">
+					<view wx:if="{{item.title}}"
+					      class="step__title {{!item.done?'step__title--todo':''}}"
+					>{{item.title}}{{!item.done?'（未完成）':'（已完成）'}}</view>
+					<view wx:if="{{item.desc}}"
+					      class="step__desc {{!item.done?'step__desc--todo':''}}"
+					>{{item.desc}}</view>
+				</view>
+			</view>
+		</block>
+	</view>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {
+				'app-icon': './icon'
+			}
+		},
+		behaviors: [],
+		properties: {
+			steps: {
+				type: Array,
+				value: []
+			}
+		},
+		data: {},
+		methods: {},
+		attached() {
+			this.setData({ style: getApp().globalData.style });
+		}
+	}
+</script>
+
+<style lang="pcss">
+	@b step {
+		display: flex;
+		background: #fff;
+		
+		@e icon {
+			margin-right: 30px;
+		}
+		
+		@e content {
+			margin-top: 5px;
+			margin-bottom:32px;
+		}
+		
+		@e title {
+			line-height:1.2em;
+			color: #333;
+			background: #fff;
+			padding-right: 1px;
+			margin-bottom: 10px;
+			
+			@m todo {
+				color: #999;
+			}
+		}
+		@e desc {
+			font-size: 0.7em;
+			color: #555;
+			
+			@m todo {
+				color: #999;
+			}
+		}
+	}
+</style>

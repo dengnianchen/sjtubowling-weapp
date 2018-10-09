@@ -1,0 +1,282 @@
+<template xmlns:wx="http://www.w3.org/1999/XSL/Transform">
+	<view class="field__body {{_error?'error':''}}">
+		<view class="field__label">{{label}}<text wx:if="{{require}}">*</text></view>
+		<input wx:if="{{type==='password'}}" class="field__input"
+		       type="text" password="{{true}}" value="{{value}}"
+		       placeholder="{{placeholder}}"
+		       placeholder-class="field__placeholder"
+		       focus="{{focus}}"
+		       maxlength="{{maxlength}}"
+		       disabled="{{disabled}}"
+		       bindinput="bindInputEdit"
+		       bindblur="bindInputBlur"/>
+		<input wx:elif="{{type==='text'||type==='number'}}" class="field__input"
+		       type="{{type}}" value="{{value}}"
+		       placeholder="{{placeholder}}"
+		       placeholder-class="field__placeholder"
+		       focus="{{focus}}"
+		       maxlength="{{maxlength}}"
+		       disabled="{{disabled}}"
+		       bindinput="bindInputEdit"
+		       bindblur="bindInputBlur"/>
+		<textarea wx:elif="{{type==='textarea'}}" class="field__area"
+		          value="{{value}}"
+		          placeholder="{{placeholder}}"
+		          placeholder-class="field__placeholder"
+		          focus="{{focus}}"
+		          maxlength="{{maxlength}}"
+		          disabled="{{disabled}}"
+		          bindinput="bindInputEdit"
+		          bindblur="bindInputBlur"></textarea>
+		<picker wx:elif="{{type==='picker'}}" class="field__input"
+		        value="{{skipfirst?(value===0?null:(value-1)):value}}"
+		        range="{{skipfirst?_range:range}}"
+		        disabled="{{disabled}}"
+		        bindchange="bindPickerChange">
+			<view wx:if="{{value===null||(skipfirst&&value===0)}}" class="field__placeholder">{{placeholder}}</view>
+			<view wx:else>{{range[value]}}</view>
+		</picker>
+		<picker wx:elif="{{type==='date'}}" class="field__input"
+		        mode="date" value="{{value}}"
+		        start="{{_startDate}}" end="{{_endDate}}"
+		        bindchange="bindDateChange">
+			<view wx:if="{{!value}}" class="field__placeholder">{{placeholder}}</view>
+			<view wx:else>{{value}}</view>
+		</picker>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	
+	export default {
+		config: {
+			usingComponents: {}
+		},
+		relations: {
+			'./form': {
+				type: 'ancestor'
+			}
+		},
+		behaviors: [],
+		properties: {
+			name: { // 控件名称（作为表单收集数据时的标识符）
+				type: String,
+				value: ""
+			},
+			type: { // 控件类型，可选：text, number, textarea, picker, date
+				type: String,
+				value: "text"
+			},
+			label: { // 标签
+				type: String,
+				value: ""
+			},
+			initValue: { // 控件的初始值，作为之后判断控件值是否发生变化的依据
+				type: null,
+				value: null,
+				observer(newVal) {
+					this.setData({ value: newVal });
+				}
+			},
+			value: { // 控件的当前值
+				type: null,
+				value: null,
+				observer(newVal) {
+					this.setData({
+						_changed: newVal !== this.data.initValue,
+						_error: false
+					});
+				}
+			},
+			range: { // 选取控件的选项列表（仅type为picker时有效）
+				type: Array,
+				value: [],
+				observer(value) {
+					this.setData({ _range: value? value.slice(1) : value });
+				}
+			},
+			skipfirst: { // 选取控件是否忽略选项列表的第一项（仅type为picker时有效）
+				type: Boolean,
+				value: false
+			},
+			placeholder: { // 占位提示，当控件值为空时显示
+				type: String,
+				value: ""
+			},
+			focus: { // 是否获得焦点（仅type为text, number, textarea时有效）
+				type: Boolean,
+				value: false
+			},
+			maxlength: { // 值的最大字符长度（仅type为text, number, textarea时有效）
+				type: Number,
+				value: -1
+			},
+			disabled: { // 控件是否为禁用状态
+				type: Boolean,
+				value: false
+			},
+			require: { // 控件是否为必填（失去焦点或提交表单时验证值是否非空）
+				type: Boolean,
+				value: false
+			},
+			validate: { // 控件数据验证流程，格式如下：
+				        // 单一验证："func-name" 或 ["func-name", arg1, arg2, ...]
+				        // 多重验证：{ "func-name-1": [ args... ], "func-name-2": [ args... ], ... ]
+				        // 配合app-form使用可指定自定义验证函数，验证函数返回类型为字
+				        // 符串，若通过验证返回空字串，否则返回描述信息
+				type: null,
+				value: null
+			}
+		},
+		data: {
+			_startDate: `${new Date ().getFullYear() - 30}-01-01`,
+			_endDate: `${new Date ().getFullYear() - 15}-12-31`,
+			_range: [],
+			_changed: false,
+			_error: false
+		},
+		methods: {
+			bindInputEdit(e) {
+				this.setData({ value: e.detail.value });
+			},
+			bindInputBlur(e) {
+				this._confirm(e.detail.value);
+			},
+			bindPickerChange(e) {
+				let value = e.detail.value;
+				if (this.data.skipfirst)
+					value++;
+				this._confirm(value);
+			},
+			bindDateChange(e) {
+				this._confirm(e.detail.value);
+			},
+			_confirm(value) {
+				let msg = this._validate(value);
+				if (msg) {
+					this.setData({ _error: true });
+					util.showModel("表单填写错误", `${this.data.label}：${msg}`);
+					return;
+				}
+				this.setData({ value: value });
+				this.triggerEvent('confirm', { value: value }, {});
+			},
+			_validateRequire(value) {
+				// 对于所有控件，值为null或undefined视为空
+				if (value === null || value === undefined)
+					return false;
+				if (this.data.type === 'picker') {
+					// 对于选择器，若指定了skipfirst（跳过第一个选项），则值0视为空
+					if (this.data.skipfirst && value === 0)
+						return false;
+				} else {
+					// 对于其他控件，空字串视为空
+					if (value === '')
+						return false;
+				}
+				return true;
+			},
+			_validate(value) {
+				if (this.data.require && !this._validateRequire(value))
+					return '必填项不能为空';
+				const validate = this.data.validate;
+				if (!validate)
+					return '';
+				const form = this.getRelationNodes('./form')[0];
+				const validators = !form ? {} : form.data.validators;
+				if (validate.constructor === String) {
+					// 单一验证，无参数
+					if (validators[validate])
+						return validators[validate](value);
+				}
+				else if (validate.constructor === Array) {
+					// 单一验证，带参数
+					if (validators[validate[0]]) {
+						let args = validate.slice(1);
+						args.unshift(value);
+						return validators[validate[0]].apply(null, args);
+					}
+				}
+				else {
+					for (let validateFuncName in validate) {
+						// 多重验证
+						if (validators[validateFuncName]) {
+							let args = validate[validateFuncName];
+							args = args ? [ value ].concat(args) : [ value ];
+							const result = validators[validateFuncName].apply(
+								null, args);
+							if (result)
+								return result;
+						}
+					}
+				}
+				return '';
+			}
+		},
+	}
+</script>
+
+<style lang="less">
+	.field__body {
+		position: relative;
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		line-height: 1.4;
+		padding: 24px 30px;
+		box-sizing:border-box;
+		font-size: 28px;
+		color: #333;
+	}
+	.field__body::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 163px;
+		right: 0;
+		width: 200%;
+		height: 200%;
+		transform: scale(.5);
+		transform-origin: 0 0;
+		pointer-events: none;
+		box-sizing: border-box;
+		border: 0 solid #e5e5e5;
+		border-bottom-width: 1px;
+	}
+	.field__body.error::after {
+		border-color: @dangerColor;
+	}
+	.field__label {
+		min-width: 163px;
+		height: 46px;
+		line-height: 46px;
+		color: #333;
+		font-weight: bold;
+		
+		text {
+			color: #F00;
+		}
+	}
+	.field__input {
+		flex: 1;
+		height: 46px;
+		min-height: 46px;
+		line-height: 46px;
+		font-size: 32px;
+	}
+	.error .field__input {
+		color: @dangerColor;
+	}
+	.field__placeholder {
+		font-size: 28px;
+		color: #999;
+	}
+	.field__area {
+		flex: 1;
+		height: 138px;
+		min-height: 138px;
+		line-height: 46px;
+		font-size: 32px;
+	}
+</style>

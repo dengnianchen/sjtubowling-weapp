@@ -1,0 +1,45 @@
+<template>
+	<view class="cc" style="min-height: {{size*2}}rpx;">
+		<image wx:if="{{src}}" src="{{src}}" style="width:{{size}}rpx;height:{{size}}rpx" mode="aspectFit"></image>
+		<view wx:if="{{text}}" style="color:{{color}};font-size:{{size/4}}rpx">{{text}}</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {}
+		},
+		behaviors: [],
+		properties: {
+			text: {
+				type: String,
+				value: ""
+			},
+			src: {
+				type: String,
+				value: null
+			},
+			size: {
+				type: Number,
+				value: 100
+			},
+			color: {
+				type: String,
+				value: '#666666'
+			}
+		},
+		data: {},
+		methods: {},
+	}
+</script>
+
+<style>
+	.cc {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+	}
+</style>

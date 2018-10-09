@@ -1,0 +1,83 @@
+<template>
+	<slot></slot>
+</template>
+
+<script>
+	import defaultValidators from './form-validator';
+	const util = require('../../utils/index');
+	
+	export default {
+		config: {
+			usingComponents: {}
+		},
+		relations: {
+			'./field': {
+				type: 'descendant'
+			},
+			'./submit': {
+				type: 'descendant'
+			}
+		},
+		behaviors: [],
+		properties: {
+		},
+		data: {
+			validators: defaultValidators
+		},
+		methods: {
+			setCustomValidators(customValidators) {
+				this.setData({
+					validators: util.extend({}, defaultValidators,
+						customValidators)
+				});
+			},
+			submit(e) {
+				// 提交时，收集所有field组件的value值，然后触发submit事件
+				let nodes = this.getRelationNodes('./field');
+				
+				// 验证所有控件的数据合法性
+				let errorNodes = [];
+				for (let node of nodes) {
+					let result = node._validate(node.data.value);
+					if (result)
+						errorNodes.push({
+							node: node,
+							message: result
+						});
+				}
+				if (errorNodes.length) {
+					// 存在非法数据，显示错误信息，中止提交
+					let messages = '';
+					for (let i = 0; i < errorNodes.length; ++i) {
+						const node = errorNodes[i].node;
+						const message = errorNodes[i].message;
+						node.setData({ _error: true });
+						if (i === errorNodes.length - 1)
+							messages += `${node.data.label}：${message}`;
+						else
+							messages += `${node.data.label}：${message}\n`;
+					}
+					util.showModel('表单填写错误', messages);
+					return;
+				}
+				
+				let params = {};
+				let changedParams = {};
+				for (let node of nodes) {
+					if (!node.data.name)
+						continue;
+					params[node.data.name] = node.data.value;
+					if (node.data._changed)
+						changedParams[node.data.name] = node.data.value;
+				}
+				this.triggerEvent("submit", util.extend({}, e.detail, {
+					params: params,
+					changedParams: changedParams
+				}, {}));
+			}
+		}
+	}
+</script>
+
+<style>
+</style>

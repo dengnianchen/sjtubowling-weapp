@@ -1,0 +1,264 @@
+<template>
+	<form bindsubmit="doTopbarAction" report-submit="{{true}}">
+		<view class="page__topbar" style="height:{{topbarHeight}}rpx">
+			<button class="fake-button topbar__item" form-type="submit"
+			        data-action='selectSortType'>
+				<app-icon name="fas fa-sort-amount-up"></app-icon>
+				{{sortTypes[curSortType].desc}}
+			</button>
+			<button class="fake-button topbar__item" form-type="submit"
+			        data-action='switchActive'>
+				{{showActive ? '显示离职员工' : '显示在职员工'}}
+			</button>
+			<!--<view class="topbar__item topbar__item-goto">
+				<picker bindchange="fastGoto" items="{{groupedList}}"
+				        items-key="key" value="{{scrollToIndex}}">
+					<app-icon name="fas fa-bars"></app-icon>
+				</picker>
+			</view>-->
+		</view>
+	</form>
+	<scroll-view class="page__main" style="top:{{topbarHeight}}rpx"
+	             scroll-y scroll-into-view="panel_{{scrollToIndex}}">
+		<view id="panel_{{index}}" class="app-panel margin-bottom" wx:for="{{groupedList}}"
+		      wx:key="key" wx:for-item="group">
+			<view class="app-panel__title">{{group.key}}</view>
+			<view class="app-panel__content">
+				<app-userlist item="{{item}}"
+				              mode="{{index === group.value.length-1 ? 'none': ''}}"
+				              roleColors="{{global.style.labelColor}}"
+				              wx:for="{{group.value}}" wx:key="uid">
+				</app-userlist>
+			</view>
+		</view>
+	</scroll-view>
+	<app-group-selector items="{{groupedList}}" key="key" top="{{topbarHeight}}"
+	                    bindselect="fastGoto"></app-group-selector>
+</template>
+
+<script>
+	const util = require('../../utils/index.js');
+	const enums = require('../../utils/enums.js');
+	const pinyin = require('../../vendor/pinyin/pinyinUtil.js');
+	
+	export default {
+		auth: true,
+		
+		config: {
+			navigationBarBackgroundColor: '#00aeef',
+			navigationBarTextStyle: 'white',
+			navigationBarTitleText: '全家福 - 在职员工',
+			usingComponents: {
+				'app-icon': '../../common/component/icon',
+				'app-userlist': '../../common/component/userlist',
+				'app-group-selector': '../../common/component/group-selector'
+			},
+		}
+		,
+		data: {
+			topbarHeight: 80,
+			groupBarItemHeight: 40,
+			groupedList: null,
+			list: [],
+			sortTypes: [
+				{
+					desc: '按拼音首字母排序',
+					func() {
+						const groupedList = this.groupAndSort(
+							item => pinyin.getFirstLetter(item.name[0]));
+						this.setData({ groupedList: groupedList });
+					},
+				}, {
+					desc: '按家乡排序',
+					func() {
+						const groupedList = this.groupAndSort(
+							item => item.province, 'number');
+						for (let group of groupedList)
+							group.key = enums.provinces[group.key];
+						this.setData({ groupedList: groupedList });
+					},
+				}, {
+					desc: '按学院排序',
+					func() {
+						const groupedList = this.groupAndSort(
+							item => item.dept, 'number');
+						for (let group of groupedList)
+							group.key = enums.departments[group.key];
+						this.setData({ groupedList: groupedList });
+					},
+				}, {
+					desc: '按年级排序',
+					func() {
+						const groupedList = this.groupAndSort(item => item.grade);
+						this.setData({ groupedList: groupedList });
+					},
+				}, {
+					desc: '按职位排序',
+					func() {
+						const groupedList = this.groupAndSort(
+							item => item.position, 'number', 'desc');
+						for (let group of groupedList)
+							group.key = enums.positions[group.key];
+						this.setData({ groupedList: groupedList });
+					},
+				}],
+			showActive: true,
+			curSortType: 0,
+			enums: enums,
+			scrollToIndex: 0,
+		},
+		
+		onLoad() {
+			this.listUsers(true);
+		},
+		
+		switchActive() {
+			this.setData({
+				showActive: !this.data.showActive,
+				groupedList: null,
+			});
+			this.listUsers(this.data.showActive);
+		},
+		
+		onGroupBarTouch(e) {
+			const y = e.touches[0].pageY;
+			const top = util.rpx2px(this.data.topbarHeight);
+			const height = util.rpx2px(this.data.groupBarItemHeight);
+			let index = Math.floor((y - top) / height);
+			if (index < 0)
+				index = 0;
+			else if (index >= this.data.groupedList.length)
+				index = this.data.groupedList.length - 1;
+			if (index !== this.data.scrollToIndex)
+				this.setData({ scrollToIndex: index });
+		},
+		
+		selectSortType() {
+			const _this = this;
+			const itemList = [];
+			for (let sortType of this.data.sortTypes)
+				itemList.push(sortType.desc);
+			wx.showActionSheet({
+				itemList: itemList,
+				success(res) {
+					if (!res.cancel)
+						_this.setSortType(res.tapIndex);
+				},
+			});
+		},
+		
+		fastGoto(e) {
+			this.setData({ scrollToIndex: e.detail.value });
+		},
+		
+		listUsers(isActive) {
+			wx.setNavigationBarTitle({
+				title: `全家福 - ${isActive ? '在职员工' : '离职员工'}`,
+			});
+			wx.setNavigationBarColor({
+				frontColor: '#ffffff',
+				backgroundColor: isActive ? '#00aeef' : '#898989',
+			});
+			util.showBusy('正在加载');
+			util.request(`/user/${isActive ? 'working' : 'leaving'}`).then(userList => {
+				this.setData({ list: util.preprocessUser(userList) });
+				this.setSortType(0);
+				util.showSuccess('加载成功');
+			}).catch(ex => {
+				util.showError('加载失败', ex);
+				console.log('加载失败', ex);
+			});
+		},
+		
+		setSortType(sortTypeIndex) {
+			this.data.sortTypes[sortTypeIndex].func.call(this);
+			this.setData({
+				curSortType: sortTypeIndex,
+				scrollToIndex: 0,
+			});
+		},
+		
+		groupAndSort(sortValueGetter, sortType, sortOrder) {
+			const listMap = {};
+			for (let item of this.data.list) {
+				const value = sortValueGetter(item);
+				if (listMap[value] === undefined)
+					listMap[value] = [];
+				listMap[value].push(item);
+			}
+			const groupedList = [];
+			for (let key in listMap) {
+				groupedList.push({
+					key: key,
+					value: listMap[key],
+				});
+			}
+			if (sortOrder === "desc") {
+				if (sortType === 'number')
+					groupedList.sort((a, b) => b.key - a.key);
+				else
+					groupedList.sort((a, b) =>
+						a.key.localeCompare(b.key, 'zh-Hans-CN',
+							{ sensitivity: 'decent' }));
+			} else {
+				if (sortType === 'number')
+					groupedList.sort((a, b) => a.key - b.key);
+				else
+					groupedList.sort((a, b) =>
+						a.key.localeCompare(b.key, 'zh-Hans-CN',
+							{ sensitivity: 'accent' }));
+			}
+			return groupedList;
+		},
+		
+		doTopbarAction(e) {
+			util.submit(e);
+			this[e.detail.target.dataset["action"]].call(this);
+		}
+		
+	};
+</script>
+
+<style>
+	.page__topbar {
+		position: absolute;
+		width: 100%;
+		background: white;
+		border-bottom: solid 1px #d9d9d9;
+		display: flex;
+		z-index: 100;
+	}
+	
+	.topbar__item {
+		height: 100%;
+		text-align: center;
+		flex-grow: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-right: solid 1px #d9d9d9;
+	}
+	.topbar__item-goto {
+		flex-grow: 0;
+	}
+	.page__main {
+		position: absolute;
+		width: 100%;
+		bottom: 0;
+	}
+	
+	.user-item {
+		display: flex;
+		align-items: center;
+	}
+	
+	.user-item__avatar {
+		width: 100px;
+		height: 100px;
+	}
+	
+	.user-item__body {
+		flex-grow: 1;
+	}
+
+</style>

@@ -1,0 +1,17 @@
+.fake-button {
+  font-size: inherit;
+  text-align: inherit;
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  line-height: inherit;
+  color: inherit;
+  background: inherit;
+  border: none;
+  border-radius: 0;
+}
+
+.fake-button::after {
+  border: none;
+  border-radius: 0;
+}

@@ -1,0 +1,955 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e4bf244c-2113-4200-8b1b-11baee239d1d" name="Default" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-1624308158">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.14" value="1" />
+          <entry key="project.open.time.37" value="1" />
+          <entry key="project.open.time.4" value="2" />
+          <entry key="project.opened" value="4" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="js" value="873" />
+          <entry key="less" value="31" />
+          <entry key="txt" value="36" />
+          <entry key="wxa" value="322" />
+          <entry key="wxc" value="419" />
+          <entry key="wxp" value="1752" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JavaScript" value="873" />
+          <entry key="Less" value="31" />
+          <entry key="PLAIN_TEXT" value="36" />
+          <entry key="Vue.js" value="2493" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="js" value="17" />
+          <entry key="json" value="4" />
+          <entry key="less" value="4" />
+          <entry key="ts" value="1" />
+          <entry key="wxc" value="4" />
+          <entry key="wxp" value="14" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JSON" value="4" />
+          <entry key="JavaScript" value="17" />
+          <entry key="Less" value="4" />
+          <entry key="TypeScript" value="1" />
+          <entry key="Vue.js" value="18" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.js.language.service.starts">
+        <counts>
+          <entry key="ESLintLanguageService" value="1" />
+        </counts>
+      </usages-collector>
+    </session>
+    <session id="-908119683">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.1" value="2" />
+          <entry key="project.open.time.115" value="1" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="6" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="js" value="1456" />
+          <entry key="less" value="26" />
+          <entry key="txt" value="42" />
+          <entry key="wxa" value="601" />
+          <entry key="wxc" value="2240" />
+          <entry key="wxp" value="7094" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JavaScript" value="1456" />
+          <entry key="Less" value="26" />
+          <entry key="PLAIN_TEXT" value="42" />
+          <entry key="Vue.js" value="9935" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="js" value="29" />
+          <entry key="json" value="4" />
+          <entry key="less" value="3" />
+          <entry key="ts" value="2" />
+          <entry key="wxa" value="5" />
+          <entry key="wxc" value="27" />
+          <entry key="wxp" value="21" />
+          <entry key="wxs" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JSON" value="4" />
+          <entry key="JavaScript" value="29" />
+          <entry key="Less" value="3" />
+          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="TypeScript" value="2" />
+          <entry key="Vue.js" value="53" />
+        </counts>
+      </usages-collector>
+    </session>
+    <session id="-658794434">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="8" />
+          <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.13" value="1" />
+          <entry key="project.open.time.2" value="3" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.38" value="1" />
+          <entry key="project.open.time.4" value="2" />
+          <entry key="project.opened" value="9" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="js" value="304" />
+          <entry key="less" value="188" />
+          <entry key="wxa" value="78" />
+          <entry key="wxc" value="2660" />
+          <entry key="wxp" value="4381" />
+          <entry key="wxss" value="85" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JavaScript" value="304" />
+          <entry key="Less" value="188" />
+          <entry key="PLAIN_TEXT" value="85" />
+          <entry key="Vue.js" value="7119" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="js" value="9" />
+          <entry key="json" value="2" />
+          <entry key="less" value="7" />
+          <entry key="wxa" value="3" />
+          <entry key="wxc" value="13" />
+          <entry key="wxp" value="24" />
+          <entry key="wxss" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JSON" value="2" />
+          <entry key="JavaScript" value="9" />
+          <entry key="Less" value="7" />
+          <entry key="PLAIN_TEXT" value="3" />
+          <entry key="Vue.js" value="40" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.7410575">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/versions.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="18">
+                  <caret line="1" column="5" lean-forward="true" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="15" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/vendor/wafer2-client-sdk/lib/request.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="612">
+                  <caret line="34" column="5" selection-start-line="22" selection-end-line="34" selection-end-column="5" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/common/component/bmenu.wxc">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="180">
+                  <caret line="13" column="65" selection-start-line="13" selection-start-column="65" selection-end-line="13" selection-end-column="65" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/pages/user/index.wxp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="112">
+                  <caret line="68" column="45" selection-start-line="68" selection-start-column="45" selection-end-line="68" selection-end-column="45" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/app.wxa">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="882">
+                  <caret line="49" column="36" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/common/layout/error.wxc">
+              <provider selected="true" editor-type-id="text-editor" />
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/common/component/abnor.wxc">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="252">
+                  <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/pages/vote/index.wxp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1206">
+                  <caret line="67" column="22" selection-start-line="67" selection-start-column="22" selection-end-line="67" selection-end-column="22" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/error.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="504">
+                  <caret line="44" column="2" selection-start-line="44" selection-start-column="2" selection-end-line="44" selection-end-column="2" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/pages/modifyAvatar/index.wxp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="360">
+                  <caret line="20" column="19" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/common/component/abnor-config.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="414">
+                  <caret line="23" selection-start-line="23" selection-end-line="23" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>schedule_table</find>
+      <find>px</find>
+      <find>rpx</find>
+      <find>wxc-label</find>
+      <find>wxc-button</find>
+      <find>&lt;wxc-button</find>
+      <find>style.labelColor</find>
+      <find>&quot;</find>
+      <find>app-panel</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>schedule-table</replace>
+      <replace>px</replace>
+      <replace>app-label</replace>
+      <replace>colors</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>F:\Projects\sjtubowling\weapp-client\src</dir>
+      <dir>E:\My_Project\sjtubowling\weapp-client\src</dir>
+      <dir>D:\Projects\sjtubowling\weapp-client\src</dir>
+    </dirStrings>
+  </component>
+  <component name="FrameworkCommandLineHistory">
+    <commandsHistory>
+      <command text="min new" />
+      <command text="min build" />
+      <command text="min install @minui/wxc-button" />
+      <command text="min install @minui/wxc-input" />
+      <command text="min install @minui/wxc-icon" />
+      <command text="min build" />
+      <command text="min install @minui/wxc-panel" />
+      <command text="min build" />
+      <command text="min install @minui/wxc-cc" />
+      <command text="min build" />
+      <command text="build.bat" />
+      <command text="min new" />
+      <command text="build.bat" />
+      <command text="npm install eslint --save-dev" />
+      <command text="./node_modules/.bin/eslint --init" />
+      <command text="./node_modules/.bin/eslint.cmd --init" />
+      <command text="build.bat" />
+    </commandsHistory>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/common/layout/error.wxc" />
+        <option value="$PROJECT_DIR$/src/common/component/group-selector.wxc" />
+        <option value="$PROJECT_DIR$/src/common/component/toast.wxc" />
+        <option value="$PROJECT_DIR$/src/utils/rpn.js" />
+        <option value="$PROJECT_DIR$/src/utils/md5.js" />
+        <option value="$PROJECT_DIR$/src/common/component/submit.wxc" />
+        <option value="$PROJECT_DIR$/min.config.json" />
+        <option value="$PROJECT_DIR$/src/common/component/abnor.wxc" />
+        <option value="$PROJECT_DIR$/src/common/component/form-validator.js" />
+        <option value="$PROJECT_DIR$/src/common/component/form.wxc" />
+        <option value="$PROJECT_DIR$/src/vendor/wafer2-client-sdk/index.js" />
+        <option value="$PROJECT_DIR$/.eslintrc.js" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$USER_HOME$/AppData/Roaming/npm/node_modules/@mindev/min-cli/node_modules/fs-extra/node_modules/jsonfile/index.js" />
+        <option value="$PROJECT_DIR$/src/vendor/wafer2-client-sdk/lib/request.js" />
+        <option value="$PROJECT_DIR$/src/common/component/cc.wxc" />
+        <option value="$PROJECT_DIR$/src/pages/modifyMenu/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/modifyPassword/index.wxp" />
+        <option value="$PROJECT_DIR$/src/common/component/userlist.wxc" />
+        <option value="$PROJECT_DIR$/src/pages/success/index.wxp" />
+        <option value="$PROJECT_DIR$/src/common/component/step.wxc" />
+        <option value="$PROJECT_DIR$/src/common/component/field.wxc" />
+        <option value="$PROJECT_DIR$/src/vendor/we-cropper/we-cropper.js" />
+        <option value="$PROJECT_DIR$/src/common/component/rolelabels.wxc" />
+        <option value="$PROJECT_DIR$/src/pages/family/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/newGuide/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/feedback/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/version/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/modifyUserinfo/index.wxp" />
+        <option value="$PROJECT_DIR$/src/common/style/app-panel.wxss" />
+        <option value="$PROJECT_DIR$/src/common/component/icon.wxc" />
+        <option value="$PROJECT_DIR$/src/common/component/list.wxc" />
+        <option value="$PROJECT_DIR$/src/common/component/label.wxc" />
+        <option value="$PROJECT_DIR$/src/style.less" />
+        <option value="$PROJECT_DIR$/src/style.js" />
+        <option value="$PROJECT_DIR$/src/common/component/votelabels.wxc" />
+        <option value="$PROJECT_DIR$/src/pages/my/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/voteList/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/bind/index.wxp" />
+        <option value="$PROJECT_DIR$/src/utils/index.js" />
+        <option value="$PROJECT_DIR$/src/pages/modifyAvatar/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/home/index.wxp" />
+        <option value="$PROJECT_DIR$/src/common/component/vote.wxc" />
+        <option value="$PROJECT_DIR$/src/app.wxa" />
+        <option value="$PROJECT_DIR$/src/error.js" />
+        <option value="$PROJECT_DIR$/src/common/component/abnor-config.js" />
+        <option value="$PROJECT_DIR$/src/pages/vote/index.wxp" />
+        <option value="$PROJECT_DIR$/src/pages/modifyFree/index.wxp" />
+        <option value="$PROJECT_DIR$/src/common/component/bmenu.wxc" />
+        <option value="$PROJECT_DIR$/src/pages/user/index.wxp" />
+        <option value="$PROJECT_DIR$/src/versions.js" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodeModulesDirectoryManager">
+    <handled-path value="$PROJECT_DIR$/node_modules" />
+  </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/package.json" />
+      <path value="$PROJECT_DIR$/src/vendor/wafer2-client-sdk/package.json" />
+    </packageJsonPaths>
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1168" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="weapp-client" type="b2602c69:ProjectViewProjectNode" />
+              <item name="weapp-client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="weapp-client" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="bcb0276e:PhpExternalLibrariesNodePatcher$PatchedExternalLibrariesNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="javascript.nodejs.core.library.configured.version" value="9.0.0" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.selected.package.eslint" value="F:\Projects\sjtubowling\weapp-client\node_modules\eslint" />
+    <property name="node.js.selected.package.standard" value="F:\Projects\sjtubowling\weapp-client\node_modules\eslint" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="settings.javascript.linters.eslint" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\My_Project\sjtubowling\weapp-client\src\common\component" />
+      <recent name="D:\Projects\sjtubowling\weapp-client\src\common\component" />
+      <recent name="D:\Projects\sjtubowling-min\src\common\component" />
+      <recent name="E:\My_Project\sjtubowling\min_client\src\common\component" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\Projects\sjtubowling\weapp-client\src" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e4bf244c-2113-4200-8b1b-11baee239d1d" name="Default" comment="" />
+      <created>1530846513714</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1532786315807</updated>
+      <workItem from="1530846522025" duration="5523000" />
+      <workItem from="1530891137151" duration="45000" />
+      <workItem from="1530891221230" duration="3411000" />
+      <workItem from="1530966459483" duration="2082000" />
+      <workItem from="1531016013753" duration="19586000" />
+      <workItem from="1531040016416" duration="23932000" />
+      <workItem from="1531094806437" duration="6712000" />
+      <workItem from="1531795566776" duration="10566000" />
+      <workItem from="1531876510409" duration="31112000" />
+      <workItem from="1531966914882" duration="33907000" />
+      <workItem from="1532016688877" duration="1761000" />
+      <workItem from="1532045844189" duration="9754000" />
+      <workItem from="1532391933848" duration="924000" />
+      <workItem from="1532401217277" duration="2898000" />
+      <workItem from="1532413452158" duration="9113000" />
+      <workItem from="1532496978910" duration="2884000" />
+      <workItem from="1532604469323" duration="9584000" />
+      <workItem from="1532755806815" duration="2895000" />
+      <workItem from="1532775519770" duration="4109000" />
+      <workItem from="1532780505846" duration="4690000" />
+      <workItem from="1532785269719" duration="1004000" />
+      <workItem from="1532786316682" duration="4740000" />
+      <workItem from="1532827316032" duration="12038000" />
+      <workItem from="1532934287645" duration="6290000" />
+      <workItem from="1532960679168" duration="8285000" />
+      <workItem from="1533085982280" duration="94000" />
+      <workItem from="1533090850782" duration="8431000" />
+      <workItem from="1533119078271" duration="8000" />
+      <workItem from="1533129585522" duration="4815000" />
+      <workItem from="1533174212421" duration="5010000" />
+      <workItem from="1533181169701" duration="4496000" />
+      <workItem from="1533210393220" duration="5265000" />
+      <workItem from="1533258169423" duration="3144000" />
+      <workItem from="1533381088305" duration="67000" />
+      <workItem from="1533381246845" duration="5409000" />
+      <workItem from="1533431084309" duration="21875000" />
+      <workItem from="1533528220181" duration="8432000" />
+      <workItem from="1533602004195" duration="208000" />
+      <workItem from="1533602302840" duration="4166000" />
+      <workItem from="1533727081391" duration="3514000" />
+      <workItem from="1533740915543" duration="2863000" />
+      <workItem from="1535932547069" duration="977000" />
+      <workItem from="1536023064744" duration="6179000" />
+      <workItem from="1536104665870" duration="20327000" />
+      <workItem from="1537016687656" duration="2211000" />
+      <workItem from="1537075271254" duration="3072000" />
+      <workItem from="1537922256750" duration="3412000" />
+      <workItem from="1538202245617" duration="18876000" />
+      <workItem from="1538485859810" duration="460000" />
+      <workItem from="1538622340375" duration="427000" />
+      <workItem from="1538622909428" duration="30413000" />
+      <workItem from="1538872446113" duration="1781000" />
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="384278000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-7" y="-7" width="1550" height="934" extended-state="6" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18230563" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3264642" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3289166" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info active="true" anchor="bottom" id="Command Line Tools Console" order="9" visible="true" weight="0.19631237" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.18329178" />
+      <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" weight="0.3297587" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+    </ignored-roots>
+  </component>
+  <component name="XPathView.XPathProjectComponent">
+    <history />
+    <find-history />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/vendor/we-cropper/we-cropper.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11772">
+          <caret line="654" column="25" selection-start-line="654" selection-start-column="25" selection-end-line="654" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/field.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1607">
+          <caret line="159" column="27" selection-start-line="159" selection-start-column="27" selection-end-line="159" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/family/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="222" selection-start-line="222" selection-end-line="222" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/newGuide/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="444">
+          <caret line="85" selection-start-line="85" selection-end-line="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/version/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="40" selection-start-line="1" selection-start-column="40" selection-end-line="1" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/feedback/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="246">
+          <caret line="62" selection-start-line="62" selection-end-line="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/modifyMenu/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="17" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/modifyUserinfo/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="44" selection-start-line="4" selection-start-column="44" selection-end-line="4" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/modifyPassword/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="33" lean-forward="true" selection-start-line="9" selection-start-column="33" selection-end-line="9" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/style/app-panel.wxss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/@minui/wxc-select/src/index.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="33" column="12" lean-forward="true" selection-start-line="33" selection-start-column="12" selection-end-line="33" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/vendor/wafer2-client-sdk/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/label.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="502">
+          <caret line="62" column="28" lean-forward="true" selection-start-line="62" selection-start-column="28" selection-end-line="62" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/rolelabels.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.es5.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="40" column="17" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/style.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="26" selection-start-line="18" selection-start-column="26" selection-end-line="18" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/style.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/my/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/project.config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-153" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="32" lean-forward="true" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/layout/loading.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="30" lean-forward="true" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/he/he.js" />
+    <entry file="file://$PROJECT_DIR$/src/utils/util.wxs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="30" lean-forward="true" selection-start-line="1" selection-start-column="30" selection-end-line="1" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/_md5.js" />
+    <entry file="file://$PROJECT_DIR$/src/utils/rpn.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/utils/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="428">
+          <caret line="383" column="122" selection-start-line="383" selection-start-column="122" selection-end-line="383" selection-end-column="122" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/bind/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="123" column="35" selection-start-line="123" selection-start-column="35" selection-end-line="123" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package-lock.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="845" column="5" selection-start-line="845" selection-start-column="5" selection-end-line="845" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/enums.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/voteList/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/min.config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="18" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/icon.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/userlist.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="41" column="19" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/votelabels.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/list.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="89" column="28" selection-start-line="89" selection-start-column="28" selection-end-line="89" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/home/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1508">
+          <caret line="117" column="26" selection-start-line="117" selection-start-column="26" selection-end-line="117" selection-end-column="26" />
+          <folding>
+            <element signature="n#style#0;n#view#1;n#view#0;n#template#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/modifyFree/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="31" column="17" selection-start-line="31" selection-start-column="17" selection-end-line="31" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/vote.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2664">
+          <caret line="148" column="25" selection-start-line="148" selection-start-column="25" selection-end-line="148" selection-end-column="25" />
+          <folding>
+            <element signature="n#style#0;n#view#0;n#view#0;n#block#0;n#checkbox-group#0;n#template#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/vendor/wafer2-client-sdk/lib/request.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="34" column="5" selection-start-line="22" selection-end-line="34" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app.wxa">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="882">
+          <caret line="49" column="36" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/layout/error.wxc">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/abnor.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/vote/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1206">
+          <caret line="67" column="22" selection-start-line="67" selection-start-column="22" selection-end-line="67" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/error.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="44" column="2" selection-start-line="44" selection-start-column="2" selection-end-line="44" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/modifyAvatar/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" column="19" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/abnor-config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="187" column="9" selection-start-line="187" selection-start-column="9" selection-end-line="187" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/component/bmenu.wxc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="13" column="65" selection-start-line="13" selection-start-column="65" selection-end-line="13" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/user/index.wxp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="68" column="45" selection-start-line="68" selection-start-column="45" selection-end-line="68" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/versions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="5" lean-forward="true" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

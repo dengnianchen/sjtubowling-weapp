@@ -1,0 +1,383 @@
+<template xmlns:wx="http://www.w3.org/1999/XSL/Transform">
+	<wxs src="../../utils/util.wxs" module="util"></wxs>
+	<view class="userinfo__fixedhead" bindtap='showFullAvatar'
+	      wx:if="{{scroll>=750-minHeight}}">
+		<view class="userinfo__fixedhead--avatar"
+		      style="background-image:url({{user.info.photo}})"></view>
+		<view class="userinfo__fixedhead--title">
+			<text>{{user.name}}</text>
+			<app-icon wx:if="{{user.info.gender===1}}" name="fas fa-mars"
+			          size="0.7em" color="#9DE1FC"></app-icon>
+			<app-icon wx:if="{{user.info.gender===2}}" name="fas fa-venus"
+			          size="0.7em" color="#F89EF8"></app-icon>
+			<app-rolelabels item="{{user}}" colors="{{global.style.labelColor}}"></app-rolelabels>
+		</view>
+	</view>
+	<view wx:if="{{scroll<750-minHeight}}" class="userinfo__avatar"
+	      style="top:-{{scroll/2}}rpx">
+		<view style="background: white">
+			<app-cc src="../../images/loading.gif" size="120" color="#999999"></app-cc>
+		</view>
+		<view wx:if="{{!user.info.photo_clip}}" style="background-image:url({{user.info.photo}})"></view>
+		<view wx:else style="background-image:url({{user.info.fullPhoto}});background-size:{{1200*750/user.info.photo_clip.width}}rpx;background-position:{{-user.info.photo_clip.x*750/user.info.photo_clip.width}}rpx {{-user.info.photo_clip.y*750/user.info.photo_clip.width}}rpx"></view>
+	</view>
+	<view class="userinfo__head" bindtap='showFullAvatar'
+	      style="background-color: rgba(0, 0, 0, {{util.min(scroll/1500,0.5)}})">
+		<view class="userinfo__head--content"
+		      style="padding-bottom:{{scroll>750-heightThres?0:'20'}}rpx"
+		      wx:if="{{scroll<750-minHeight}}">
+			<app-rolelabels wx:if="{{scroll<=750-heightThres}}" item="{{user}}" colors="{{global.style.labelColor}}"></app-rolelabels>
+			<view class="userinfo__title"
+			      style="font-size:{{util.max(90-scroll/(750-heightThres)*40,50)}}rpx">
+				<text style="white-space:{{scroll>750-heightThres?'nowrap':'normal'}}">{{user.name}}</text>
+				<app-icon wx:if="{{user.info.gender===1}}" name="fas fa-mars"
+				          size="0.7em" color="#9DE1FC"></app-icon>
+				<app-icon wx:if="{{user.info.gender===2}}" name="fas fa-venus"
+				          size="0.7em" color="#F89EF8"></app-icon>
+				<app-rolelabels wx:if="{{scroll>750-heightThres}}" item="{{user}}" colors="{{global.style.labelColor}}"></app-rolelabels>
+			</view>
+		</view>
+	</view>
+	<view class="userinfo__main">
+		<view class="app-panel margin-bottom">
+			<view class="app-panel__title">基本信息</view>
+			<view class="app-panel__content">
+				<view class="userinfo__row">
+					<view class="userinfo__label">学号</view>
+					<view class="userinfo__value">{{user.sid}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">生日</view>
+					<view class="userinfo__value">{{user.info.birthday}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">家乡</view>
+					<view class="userinfo__value"><text decode="{{true}}">{{enums.provinces[user.info.province]}} {{user.info.city}}</text></view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">手机</view>
+					<view class="userinfo__value">{{user.info.tel}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">爱好</view>
+					<view class="userinfo__value"><text decode="{{true}}">{{user.info.hobby}}</text></view>
+				</view>
+			</view>
+		</view>
+		<view class="app-panel margin-bottom">
+			<view class="app-panel__title">其他信息</view>
+			<view class="app-panel__content">
+				<view class="userinfo__row">
+					<view class="userinfo__label">学院</view>
+					<view class="userinfo__value">{{enums.departments[user.info.dept]}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">专业</view>
+					<view class="userinfo__value">{{user.info.major}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">年级</view>
+					<view class="userinfo__value">{{user.info.grade}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">寝室</view>
+					<view class="userinfo__value">{{user.info.dorm}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">QQ</view>
+					<view class="userinfo__value">{{user.info.qq}}</view>
+				</view>
+				<view class="userinfo__row">
+					<view class="userinfo__label">E-mail</view>
+					<view class="userinfo__value">{{user.info.email}}</view>
+				</view>
+			</view>
+		</view>
+		<view class="app-panel margin-bottom">
+			<view class="app-panel__title">空余时间</view>
+			<view class="app-panel__content">
+				<app-abnor wx:if="{{user.active!==1}}" error="ERR_USER_LEAVE"></app-abnor>
+				<view wx:else class="table">
+					<view class="thead">
+						<view class="th"></view>
+						<view class="th">A班</view>
+						<view class="th">B班</view>
+					</view>
+					<view class="tr" wx:for="{{timetableHead}}" wx:key="*this">
+						<view class="td">{{item}}</view>
+						<view class="td">{{user.timetable[index + 1 + 'A'] == 1 ? '√' : ''}}</view>
+						<view class="td">{{user.timetable[index + 1 + 'B'] == 1 ? '√' : ''}}</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+	<app-bmenu items="{{bottomMenu}}" bindclick="onBmenuItemClicked"></app-bmenu>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	const enums = require('../../utils/enums');
+	
+	export default {
+		auth: true,
+		isRendering: false,
+		scrollTo: undefined,
+		config: {
+			navigationBarTitleText: '个人资料',
+			enablePullDownRefresh: true,
+			usingComponents: {
+				'app-rolelabels': '../../common/component/rolelabels',
+				'app-icon': '../../common/component/icon',
+				'app-abnor': '../../common/component/abnor',
+				'app-cc': '../../common/component/cc',
+				'app-bmenu': '../../common/component/bmenu'
+			}
+		},
+		
+		/**
+		 * 页面的初始数据
+		 */
+		data: {
+			user: {},
+			enums: enums,
+			timetableHead: enums.weekdays,
+			scroll: 0,
+			heightThres: 140,
+			minHeight: 120,
+			bottomMenu: [
+				{
+					text: "拨打电话",
+					icon: "fas fa-phone",
+					action() {
+						if (!this.data.user.info.tel) {
+							util.showModel("拨打电话", "该员工未填写手机号码");
+							return;
+						}
+						wx.makePhoneCall({
+							phoneNumber: this.data.user.info.tel
+						});
+					}
+				},
+				/*{
+					text: "发送私信",
+					icon: "fas fa-comment",
+					action() {
+						util.showModel("发送私信", "功能尚未实现");
+					}
+				},*/
+				{
+					text: "转发名片",
+					icon: "fas fa-share-square",
+					type: "share"
+				}
+			]
+		},
+		
+		/**
+		 * 生命周期函数--监听页面加载
+		 */
+		onLoad(options) {
+			if (options.uid !== undefined
+				&& options.uid !== this.data.suser.uid) {
+				return util.request(`/user/${options.uid}`).then(user => {
+					this.setData({
+						user: util.preprocessUser(user),
+						isSelf: false
+					});
+				});
+			} else {
+				return util.request(`/user/${this.data.suser.uid}`).then(user => {
+					this.setData({
+						user: util.preprocessUser(user),
+						isSelf: true
+					});
+				});
+			}
+		},
+		
+		onShow() {
+			// 若该页面显示的是当前登录用户且重新显示时用户信息已经发生变化，则重新加载页面内容
+			if (!this.data.loading &&
+				this.data.isSelf &&
+				this.data.suser.version !== util.getCurrentUser().version)
+				this.onLoad();
+		},
+		
+		onPullDownRefresh() {
+			util.request(`/user/${this.data.user.uid}`).then(user => {
+				this.setData({
+					user: util.preprocessUser(user)
+				});
+				wx.stopPullDownRefresh();
+			});
+		},
+		
+		onPageScroll(e) {
+			if (this.isRendering) {
+				this.scrollTo = e;
+				return;
+			}
+			this.isRendering = true;
+			this.scrollTo = undefined;
+			this.setData({ scroll: util.px2rpx(e.scrollTop) }, () => {
+				this.isRendering = false;
+				if (this.scrollTo !== undefined)
+					this.onPageScroll(this.scrollTo);
+			});
+		},
+		
+		onShareAppMessage(res) {
+			return {
+				title: "员工名片：" + this.data.user.name,
+				path: this.getPath(),
+				imageUrl: this.data.user.info.photo
+			};
+		},
+		
+		showFullAvatar() {
+			const url = this.data.user.info.fullPhoto;
+			wx.previewImage({
+				current: url, // 当前显示图片的http链接
+				urls: [url] // 需要预览的图片http链接列表
+			})
+		},
+		
+		onBmenuItemClicked(event) {
+			if (event.detail.formId)
+				util.submit(event);
+			this.data.bottomMenu[event.detail.value].action.apply(this);
+		}
+		
+	}
+</script>
+
+<style lang="less">
+	@min-head-height: 120px;
+	
+	.userinfo__fixedhead {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		height: @min-head-height;
+		z-index: 100;
+	}
+	.userinfo__fixedhead--avatar {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		top: 0;
+		background-size: 750px 750px;
+		background-position: center;
+		z-index: -100;
+	}
+	.userinfo__fixedhead--title {
+		background-color: rgba(0,0,0,0.5);
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		font-size: 50px;
+		line-height: 1em;
+		color: white;
+		padding: 0 50px 0 20px;
+		text-shadow: 0 0 10px #000000;
+	}
+	.userinfo__fixedhead--title text {
+		white-space: nowrap;
+	}
+	.userinfo__fixedhead--title app-rolelabels {
+		text-shadow: none;
+		font-size: 45px;
+	}
+	.userinfo__avatar {
+		width: 750px;
+		height: 750px;
+		min-height: @min-head-height;
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: -100;
+	}
+	.userinfo__avatar > view {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: no-repeat center;
+		background-size: 100%;
+	}
+	.userinfo__avatar--loading {
+		background: white;
+	}
+	.userinfo__head {
+		position: relative;
+		height: 750px;
+	}
+	.userinfo__head--content {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		min-height: 120px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 0 50px 0 20px;
+	}
+	.userinfo__title {
+		font-size: 90px;
+		line-height: 1em;
+		color: white;
+		text-shadow: 0 0 10px #000000;
+		display: flex;
+		align-items: center;
+	}
+	.userinfo__head app-rolelabels {
+		display: block;
+		font-size: 45px;
+	}
+	.userinfo__title app-rolelabels {
+		text-shadow: none;
+		font-size: 45px;
+	}
+	.userinfo__main {
+		background: @backgroundColor;
+	}
+	.userinfo__row {
+		margin: 0.5em 0;
+		display: flex;
+		align-items: flex-start;
+	}
+	.userinfo__label {
+		display: inline-block;
+		min-width: 4em;
+	}
+	.userinfo__value {
+		display: inline-block;
+		flex-grow: 1;
+		padding-left: 2em;
+	}
+	.thead, .tr {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		padding: 0.5em 0;
+		align-items: center;
+		border-bottom: 1px solid #e5e5e5;
+	}
+	.thead {
+		font-weight: bold;
+	}
+	.td, .th {
+		width: 40%;
+		justify-content: center;
+		text-align: center;
+	}
+</style>

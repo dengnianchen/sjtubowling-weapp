@@ -1,0 +1,65 @@
+<template>
+	<view class="success-page">
+		<icon class="success-page__icon" type="success" size="93"></icon>
+		<view class="success-page__title">操作成功</view>
+		<view wx:if="{{desc}}" class="success-page__desc">{{desc}}</view>
+	</view>
+	<view class="large-btn-wrapper">
+		<wxc-button size="large" value="返回" type="success"
+		            bind:submit='back'></wxc-button>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	
+	export default {
+		
+		config: {
+			navigationBarTitleText: '操作成功',
+			usingComponents: {
+				'wxc-button': '@minui/wxc-button',
+			},
+		},
+		
+		data: {},
+		
+		onLoad(options) {
+			this.setData(options);
+		},
+		
+		back(e) {
+			if (this.data.suser)
+				util.submit(e);
+			if (getApp().globalData.work) {
+				let workSuccess = getApp().globalData.work.success;
+				getApp().globalData.work = null;
+				return workSuccess();
+			} else
+				wx.navigateBack();
+		}
+		
+	};
+</script>
+
+<style lang="less">
+	
+	.success-page {
+		text-align:center;
+		padding: 20px;
+	}
+	.success-page__icon {
+		margin: 50px 0;
+	}
+	.success-page__title {
+		font-size: 40px;
+		font-weight: 400;
+		margin-bottom: 10px;
+	}
+	.success-page__desc {
+		font-size: 28px;
+		color: @darkPromptColor;
+		padding: 0 20px;
+	}
+	
+</style>

@@ -1,0 +1,59 @@
+<template xmlns:wx="http://www.w3.org/1999/XSL/Transform">
+	<view class="app-panel">
+		<view class="app-panel_content">
+			<app-list wx:for="{{menu}}" wx:key="index"
+			          id="menuitem-{{index}}" title="{{item.title}}"
+			          desc="{{item.desc}}" icon="{{item.icon}}"
+			          mode="{{index === menu.length-1 ? 'none': ''}}"
+			          bind:click="onMenuItemClick"></app-list>
+		</view>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+
+	export default {
+		config: {
+			navigationBarTitleText: '修改个人信息',
+			usingComponents: {
+				"app-list": "../../common/component/list"
+			},
+		},
+		data: {
+			menu: [
+				{
+					title: '修改资料',
+					icon: 'fas fa-address-book',
+					action: () => wx.redirectTo({ url: '/pages/modifyUserinfo/index' })
+				},
+				{
+					title: '修改头像',
+					icon: 'fas fa-user-circle',
+					action: () => wx.redirectTo({ url: '/pages/modifyAvatar/index' })
+				},
+				{
+					title: '修改网站密码',
+					icon: 'fas fa-key',
+					action: () => wx.redirectTo({ url: '/pages/modifyPassword/index' })
+				},
+				{
+					title: '修改空余时间',
+					icon: 'fas fa-clock',
+					action: () => wx.redirectTo({ url: '/pages/modifyFree/index' })
+				}
+			],
+		},
+		onMenuItemClick(e) {
+			util.submit(e);
+			const idSplited = e.target.id.split('-');
+			const menuId = parseInt(idSplited[1]);
+			const action = this.data.menu[menuId].action;
+			if (action !== undefined)
+				action.call(this);
+		}
+	};
+</script>
+
+<style>
+</style>

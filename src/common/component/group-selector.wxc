@@ -1,0 +1,114 @@
+<template>
+	<view class="group-selector__body" style="top:{{top}}rpx"
+	      bindtouchstart="onGroupBarTouch" bindtouchmove="onGroupBarTouch"
+	      bindtouchend="onGroupBarTouchEnd" bindtouchcancel="onGroupBarTouchEnd">
+		<view class="group-selector__item" id="group_{{index}}"
+		      style="font-size:{{fontSize}}rpx"
+		      wx:for="{{items}}" wx:key="index" wx:for-item="group">
+			{{key?group[key]:group}}
+		</view>
+	</view>
+	<app-toast is-show="{{showToast}}" text="{{selectedText}}"></app-toast>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	
+	export default {
+		config: {
+			usingComponents: {
+				'app-toast': './toast'
+			}
+		},
+		behaviors: [],
+		properties: {
+			top: {
+				type: Number,
+				value: 0,
+				observer(value) {
+					this.setData({
+						totalHeight: util.getScreenSize("rpx").y - value
+					});
+					this.updateItemHeight();
+				}
+			},
+			items: {
+				type: Array,
+				value: [],
+				observer(value) {
+					this.updateItemHeight();
+				}
+			},
+			key: {
+				type: String,
+				value: null
+			},
+			index: {
+				type: Number,
+				value: 0
+			}
+		},
+		data: {
+			totalHeight: util.getScreenSize("rpx").y,
+			itemHeight: 40,
+			itemMaxHeight: 40,
+			fontSize: 24
+		},
+		methods: {
+			updateItemHeight() {
+				const n = this.data.items.length;
+				const itemHeight = this.data.totalHeight > n * this.data.itemMaxHeight ?
+					this.data.itemMaxHeight :
+					this.data.totalHeight / n;
+				this.setData({
+					itemHeight: itemHeight,
+					fontSize: Math.min(24, itemHeight - 5)
+				});
+			},
+			onGroupBarTouch(e) {
+				if (!this.data.items || !this.data.items.length)
+					return;
+				const y = util.px2rpx(e.touches[0].pageY) - this.data.top;
+				const h = this.data.itemHeight;
+				let index = Math.floor(y / h);
+				if (index < 0)
+					index = 0;
+				else if (index >= this.data.items.length)
+					index = this.data.items.length - 1;
+				if (index !== this.data.index) {
+					this.setData({
+						index: index,
+						showToast: true,
+						selectedText: this.data.key ?
+							this.data.items[index][this.data.key] :
+							this.data.items[index]
+					});
+					this.triggerEvent('select', { value: index }, {});
+				}
+			},
+			onGroupBarTouchEnd(e) {
+				this.setData({ showToast: false });
+			}
+		},
+	}
+</script>
+
+<style lang="less">
+	.group-selector__body {
+		position: fixed;
+		right: 30px;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		z-index: 100;
+		color: #999;
+	}
+	.group-selector__item {
+		padding: 0 10px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

@@ -1,0 +1,83 @@
+<template>
+	<wxc-button size="{{size}}"
+	            type="{{type}}"
+	            plain="{{plain}}"
+	            value="{{value}}"
+	            hoverClass="{{hoverClass}}"
+	            loading="{{loading}}"
+	            btnStyle="{{btnStyle}}"
+	            hoverStopPropagation="{{hoverStopPropagation}}"
+	            hoverStartTime="{{hoverStartTime}}"
+	            hoverStayTime="{{hoverStayTime}}"
+	            bindsubmit="onSubmit"
+	></wxc-button>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {
+				'wxc-button': '@minui/wxc-button'
+			}
+		},
+		relations: {
+			'./form': {
+				type: 'ancestor'
+			}
+		},
+		behaviors: [],
+		properties: {
+			size: {
+				type: String,
+				value: "normal" // normal small large
+			},
+			type: {
+				type: String,
+				value: '' //beauty selection success primary danger warning secondary info dark disabled  按钮的样式类型
+			},
+			plain: {
+				type: Boolean,
+				value: false // 按钮是否镂空，背景色透明
+			},
+			value: {
+				type: String,
+				value: ""
+			},
+			hoverClass: {
+				type: String,
+				value: "btn__hover" // btn__hover none
+			},
+			loading: {
+				type: Boolean,
+				value: false // 名称前是否带 loading 图标
+			},
+			btnStyle: {
+				type: String,
+				value: ""
+			},
+			hoverStopPropagation: {
+				type: Boolean,
+				value: false
+			},
+			hoverStartTime: {
+				type: [Number, String],
+				value: 20
+			},
+			hoverStayTime: {
+				type: [Number, String],
+				value: 70
+			}
+		},
+		data: {},
+		methods: {
+			onSubmit(event) {
+				let form = this.getRelationNodes('./form')[0];
+				if (form)
+					form.submit(event);
+			}
+		}
+	}
+</script>
+
+<style lang="pcss">
+</style>

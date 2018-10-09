@@ -1,0 +1,222 @@
+<template xmlns:wx="http://www.w3.org/1999/XSL/Transform">
+	<app-form id="form" bindsubmit="onSubmit">
+		<view wx:for="{{fields}}" wx:key="groupName"
+		      wx:for-index="groupName" wx:for-item="group"
+		      class="app-panel margin-bottom">
+			<view class="app-panel__title">{{groupName}}</view>
+			<view class="app-panel__content">
+				<app-field wx:for="{{group}}" wx:key="index"
+				           id="{{item.id}}"
+				           type="{{item.type}}"
+				           label="{{item.label}}"
+				           range="{{item.range}}"
+				           initValue="{{item.initValue}}"
+				           skipfirst="{{item.skipfirst}}"
+				           placeholder="{{item.placeholder}}"
+				           maxlength="{{item.maxlength}}"
+				           bindconfirm="onFieldChange"
+				           name="{{index}}"
+				           require="{{item.require}}"
+				           validate="{{item.validate}}"
+				></app-field>
+			</view>
+		</view>
+		<view class="large-btn-wrapper">
+			<app-submit size="large" value="保存" type="primary"></app-submit>
+		</view>
+	</app-form>
+</template>
+
+<script>
+	
+	const enums = require('../../utils/enums');
+	const util = require('../../utils/index');
+	
+	const customValidators = {
+		grade: function (value) {
+			const patt = /^[A-Z][0-9]{2}$/i;
+			if (patt.test(value))
+				return '';
+			return '格式应为字母+两位数字，例如F18';
+		}
+	};
+	
+	const fields = {
+		"基本信息": {
+			'sid': {
+				label: '学号',
+				placeholder: '请输入学号',
+				name: 'sid',
+				type: 'number',
+				maxlength: 15,
+				require: true,
+				validate: [ 'minlength', 10 ]
+			},
+			'info.grade': {
+				label: '年级',
+				placeholder: '请输入班级号前三位',
+				type: 'text',
+				maxlength: 3,
+				require: true,
+				validate: 'grade'
+			},
+			'info.gender': {
+				label: '性别',
+				placeholder: '请选择性别',
+				type: 'picker',
+				range: enums.gender,
+				skipfirst: true,
+				require: true
+			},
+			'info.birthday': {
+				label: '生日',
+				placeholder: '请选择日期',
+				type: 'date',
+				require: true
+			},
+		},
+		"联系信息": {
+			'info.tel': {
+				label: '手机',
+				placeholder: '请输入手机号',
+				name: 'info.tel',
+				type: 'number',
+				maxlength: 11,
+				require: true,
+				validate: [ 'eqlength', 11 ]
+			},
+			'info.email': {
+				label: 'E-mail',
+				placeholder: '请输入电子邮件地址',
+				name: 'info.email',
+				type: 'text',
+				maxlength: 50,
+				require: true,
+				validate: 'email'
+			},
+			'info.qq': {
+				label: 'QQ',
+				placeholder: '请输入QQ号',
+				name: 'info.qq',
+				type: 'number',
+				maxlength: 15
+			},
+		},
+		"其他信息": {
+			'info.province': {
+				label: '家乡',
+				placeholder: '请选择家乡省份或地区',
+				type: 'picker',
+				range: enums.provinces,
+				skipfirst: true,
+				require: true
+			},
+			'info.city': {
+				label: '城市',
+				placeholder: '请输入家乡城市',
+				type: 'text',
+				maxlength: 20
+			},
+			'info.dept': {
+				label: '学院',
+				placeholder: '请选择学院',
+				name: 'info.dept',
+				type: 'picker',
+				range: enums.departments,
+				skipfirst: true,
+				require: true
+			},
+			'info.major': {
+				label: '专业',
+				placeholder: '请输入专业',
+				name: 'info.major',
+				type: 'text',
+				maxlength: 20
+			},
+			'info.dorm': {
+				label: '寝室',
+				placeholder: '请输入寝室地址',
+				name: 'info.dorm',
+				type: 'text',
+				maxlength: 20
+			},
+			'info.hobby': {
+				label: '爱好',
+				placeholder: '请输入兴趣爱好',
+				name: 'info.hobby',
+				type: 'text',
+				maxlength: 50
+			},
+		},
+	};
+	
+	export default {
+		auth: true,
+		params: {},
+		
+		config: {
+			navigationBarTitleText: '修改个人资料',
+			usingComponents: {
+				"app-field": "../../common/component/field",
+				"app-form": "../../common/component/form",
+				"app-submit": "../../common/component/submit",
+			},
+		},
+		
+		data: {},
+		
+		onLoad() {
+			this.selectComponent('#form').setCustomValidators(customValidators);
+			for (let groupName in fields) {
+				let group = fields[groupName];
+				for (let name in fields[groupName]) {
+					group[name].id = 'field-' + name.replace('.', '-');
+					group[name].initValue = util.getValue(this.data.suser, name);
+				}
+			}
+			this.setData({ fields: fields });
+		},
+		
+		onFieldChange(e) {
+			if (e.target.id === "field-sid") {
+				let sid = e.detail.value;
+				let type = sid[0];
+				let gradeHead = type === '0' ? 'A' : (type === '1' ? 'B' : 'F');
+				this.selectComponent("#field-info-grade").setData({
+					value: gradeHead + sid.substr(1, 2)
+				});
+			}
+		},
+		
+		onSubmit(e) {
+			console.log(e);
+			util.showBusy('保存中……');
+			
+			// 若没有进行任何修改则直接跳转到成功页面
+			if (util.isEmptyObject(e.detail.changedParams))
+				return this.onSubmitSuccess();
+			
+			// 提交修改过的字段
+			util.submit(e, 'POST /user', e.detail.changedParams).then(user => {
+				util.setCurrentUser(user);
+				return this.onSubmitSuccess();
+			}).catch(ex => {
+				util.showError('保存失败', ex);
+				console.log('保存失败', ex);
+			});
+		},
+		
+		onSubmitSuccess() {
+			util.showSuccess('保存成功！');
+			setTimeout(() => {
+				if (getApp().globalData.work)
+					getApp().globalData.work.next();
+				else
+					wx.navigateBack();
+			}, 1000);
+		}
+		
+	};
+</script>
+<style lang="less">
+</style>

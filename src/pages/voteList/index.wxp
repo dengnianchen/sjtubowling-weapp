@@ -1,0 +1,72 @@
+<template>
+	<view class="app-panel">
+		<app-list wx:for="{{votes}}" wx:key="id" wx:for-item="vote"
+		          wx:if="{{vote.status&&!vote.expired}}"
+		          id="vote-{{vote.id}}"
+		          mode="{{index === votes.length-1 ? 'none': ''}}"
+		          bind:click="onListItemClicked"
+		>
+			<view slot="content">
+				<text decode="{{true}}">{{vote.name}}</text>
+				<app-votelabels class="vote__label"
+				                item="{{vote}}"
+				                _style="{{global.style}}"
+				></app-votelabels>
+			</view>
+		</app-list>
+	</view>
+	<view class="votelist__tip">列表中仅显示目前开放的投票</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	const config = require('../../config');
+
+	export default {
+		auth: true,
+		
+		config: {
+			navigationBarTitleText: '投票列表',
+			usingComponents: {
+				'app-list': '../../common/component/list',
+				'app-votelabels': '../../common/component/votelabels'
+			},
+		},
+		
+		data: {},
+		
+		onLoad() {
+			return util.request('/vote/visible').then(votes => {
+				// Set 'expired' if deadline has past
+				for (let vote of votes)
+					if (vote.deadline)
+						vote.expired = new Date () > new Date (vote.deadline);
+				this.setData({ votes: votes });
+			});
+		},
+		onListItemClicked(e) {
+			util.submit(e);
+			const idSplited = e.target.id.split('-');
+			const voteId = parseInt(idSplited[1]);
+			wx.navigateTo({
+				url: `/pages/vote/index?id=${voteId}`,
+			});
+		}
+	};
+</script>
+
+<style lang="less">
+	@import "../../style";
+	
+	.vote__label {
+		display: inline;
+		white-space: nowrap;
+		margin-left: 10px;
+	}
+	.votelist__tip {
+		margin: 10px 15px 0 15px;
+		font-size: @fontSize__subDesc;
+		color: @color__subDesc;
+		text-align: center;
+	}
+</style>

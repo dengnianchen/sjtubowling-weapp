@@ -1,0 +1,86 @@
+<template xmlns:wx="http://www.w3.org/1999/xhtml">
+	<view class="bmenu--placeholder"></view>
+	<view class="bmenu">
+		<view class="bmenu__main">
+			<view wx:for="{{items}}" wx:key="text">
+				<button wx:if="{{item.type==='share'}}" id="bmenu-{{index}}"
+				        class="fake-button bmenu__item"
+				        open-type="share">
+					<app-icon class="bmenu__item--icon" color="{{iconColor}}" name="{{item.icon}}"></app-icon>
+					<view class="bmenu__item--text">{{item.text}}</view>
+				</button>
+				<form wx:else id="bmenu-{{index}}" bindsubmit="onItemClicked" report-submit="{{true}}">
+					<button class="fake-button bmenu__item" form-type="submit">
+						<app-icon class="bmenu__item--icon" color="{{iconColor}}" name="{{item.icon}}"></app-icon>
+						<view class="bmenu__item--text">{{item.text}}</view>
+					</button>
+				</form>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {
+				'app-icon': './icon'
+			}
+		},
+		behaviors: [ ],
+		properties: {
+			items: Array, // { text, icon, type }
+			iconColor: {
+				type: String,
+				value: "#00d625"
+			},
+			_style: Object
+		},
+		methods: {
+			onItemClicked(event) {
+				event.detail.value = parseInt(event.target.id.split("-")[1]);
+				this.triggerEvent('click', event.detail, {});
+			}
+		}
+	}
+</script>
+
+<style lang="less">
+	@import "../style/fake-button.wxss";
+	.bmenu--placeholder {
+		margin-top: 110px;
+		height: 1px;
+	}
+	.bmenu {
+		position: fixed;
+		z-index: 50;
+		left: 0;
+		right: 0;
+		bottom: 20px;
+		display: flex;
+		justify-content: center;
+	}
+	.bmenu__main {
+		height: 80px;
+		padding: 0 30px;
+		display: flex;
+		align-items: center;
+		background: white;
+		border-radius: 40px;
+		box-shadow: 3px 3px 5px #aaaaaa,
+					0 0 1px #aaaaaa;
+	}
+	.bmenu__item {
+		width: 130px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.bmenu__item--icon {
+		font-size: 36px;
+	}
+	.bmenu__item--text {
+		font-size: 18px;
+		color: #999999;
+	}
+</style>

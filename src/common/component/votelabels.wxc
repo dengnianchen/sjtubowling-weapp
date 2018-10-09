@@ -1,0 +1,28 @@
+<template>
+	<app-label wx:if="{{item.status===0}}" class="label" type-color="{{_style.disableColor}}" type="fill" text="已关闭"></app-label>
+	<app-label wx:elif="{{item.expired}}" class="label" type-color="{{_style.disableColor}}" type="fill" text="已过期"></app-label>
+	<app-label wx:if="{{item.is_voted||item.result}}" class="label" type-color="{{_style.successColor}}" type="fill" text="已投票"></app-label>
+	<app-label wx:else type-color="{{_style.dangerColor}}" class="label" type="fill" text="未投票"></app-label>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {
+				'app-label': './label',
+			}
+		},
+		behaviors: [ ],
+		properties: {
+			item: Object,
+			_style: Object
+		},
+	}
+</script>
+
+<style lang="pcss">
+	.label::after {
+		content: " ";
+		width: 3px;
+	}
+</style>

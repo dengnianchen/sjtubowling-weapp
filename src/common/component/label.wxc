@@ -1,0 +1,69 @@
+<template>
+	<view class="label label__type--{{type}} label__system--{{_system_}}"
+	      style="border: 1px solid {{typeColor}}; background-color:{{type === 'plain' ? 'transparent' : typeColor}}; color: {{type === 'plain' ? typeColor : textColor}};">
+		<slot wx:if="{{!text}}"></slot>
+		{{text ? text : ''}}
+	</view>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {},
+		},
+		behaviors: [],
+		properties: {
+			text: {
+				type: String,
+				value: 0,
+			},
+			type: {
+				type: String,
+				value: 'plain',
+			},
+			typeColor: {
+				type: String,
+				value: '#ff5777',
+			},
+			textColor: {
+				type: String,
+				value: '#ffffff',
+			},
+			_system_: {
+				type: String,
+				value: '',
+			},
+		},
+		data: {},
+		methods: {},
+		attached: function() {
+			let host = this;
+			wx.getSystemInfo && wx.getSystemInfo({
+				success: function(res) {
+					host.setData({
+						_system_: !!~res.system.indexOf('Android') ? 'android' : 'ios',
+					});
+				},
+			});
+		},
+	};
+</script>
+
+<style>
+	.label {
+		display: inline-block;
+		height: 1.4em;
+		line-height: 1.4em;
+		padding: 0 0.3em;
+		font-size: 0.7em;
+		font-family: PingFangSC;
+		border-radius: 0.2em;
+		vertical-align: middle;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+	
+	.label__system--android {
+		line-height: 1.5em;
+	}
+</style>

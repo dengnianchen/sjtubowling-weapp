@@ -1,0 +1,206 @@
+<template>
+	<view>
+		<layout-loading wx:if="{{loading}}"></layout-loading>
+		<layout-error wx:if="{{loadingError}}" error="{{loadingError}}"></layout-error>
+		<page></page>
+	</view>
+</template>
+
+<script>
+	const qcloud = require('./vendor/wafer2-client-sdk/index');
+	const config = require('./config');
+	const util = require('./utils/index');
+	const style = require('./style');
+	
+	function pageLoading(onLoadFunc, options) {
+		// 尝试获取当前登陆用户
+		const user = util.getCurrentUser();
+		if (user)
+			this.setData({ suser: user });
+		if (this.auth) {
+			if (!user) {
+				// 当前未登录且该页面需要登陆才能访问，则跳转到登录页面
+				return wx.redirectTo({
+					url: `../bind/index?from=${encodeURIComponent(this.getPath())}`,
+				});
+			}
+			if (!getApp().globalData.work && this.route !== "pages/newGuide/index") {
+				// 检查用户信息是否已完善，若没有则跳转到新用户指导页面
+				const completion = util.checkUserinfoCompletion(user);
+				for (let c of completion) {
+					if (!c)
+						return wx.redirectTo({
+							url: `../newGuide/index?from=${encodeURIComponent(this.getPath())}`,
+						});
+				}
+			}
+		}
+		
+		this.setData({ global: getApp().globalData });
+		
+		if (onLoadFunc instanceof Function) {
+			// 继续执行原先的onLoad函数
+			const promise = onLoadFunc.call(this, options);
+			if (!promise || promise.constructor !== Promise)
+				this.setData({ loading: false });
+			else {
+				promise.then(() => {
+					this.setData({ loading: false })
+				}).catch(ex => {
+					// 页面加载失败，显示错误界面
+					console.log('加载失败', ex);
+					this.setData({
+						loading: false,
+						loadingError: { type: ex.type, message: ex.message }
+					})
+				});
+			}
+		} else {
+			this.setData({ loading: false });
+		}
+	}
+	
+	const originPageFunction = Page;
+	Page = function(page) {
+		page.data = util.extend({}, page.data, { loading: true });
+		const pageOnLoad = page.onLoad;
+		page.onLoad = function(options) {
+			this.setData({ loading: true });
+			// 若当前不存在全局配置信息，则先加载之
+			if (!util.getConfig()) {
+				util.request("/common/config").then(config => {
+					getApp().globalData.config = config;
+					pageLoading.call(this, pageOnLoad, options);
+				}).catch(ex => {
+					console.log('加载失败', ex);
+					this.setData({
+						loading: false,
+						loadingError: ex
+					})
+				});
+			} else
+				pageLoading.call(this, pageOnLoad, options);
+		};
+		// Add utility functions to page
+		page.getPath = function() {
+			let path = this.route;
+			if (!util.isEmptyObject(this.options))
+				path += `?${util.obj2params(this.options)}`;
+			return path;
+		};
+		
+		// Call origin function Page()
+		originPageFunction(page);
+	};
+
+	Promise.prototype.finally = function(fn) {
+		function finFn() {
+			fn.call(null);
+		}
+		this.then(finFn, finFn);
+		return this;
+	};
+	
+	export default {
+		config: {
+			usingComponents: {
+				'layout-loading': 'layout/loading',
+				'layout-error': 'layout/error',
+			},
+			pages: [],
+			window: {
+				backgroundTextStyle: 'dark',
+				backgroundColor: '#efefef',
+				navigationBarBackgroundColor: '#ffffff',
+				navigationBarTitleText: '交大保龄 - 员工之家',
+				navigationBarTextStyle: 'black',
+			},
+			networkTimeout: {
+				request: 10000,
+			},
+			tabBar: {
+				color: '#999999',
+				selectedColor: '#00B26A',
+				list: [
+					{
+						pagePath: 'pages/home/index',
+						text: '首页',
+						iconPath: '/images/home.png',
+						selectedIconPath: '/images/home-active.png'
+					}, {
+						pagePath: 'pages/family/index',
+						text: '全家福',
+						iconPath: '/images/family.png',
+						selectedIconPath: '/images/family-active.png'
+					}, {
+						pagePath: 'pages/my/index',
+						text: '个人中心',
+						iconPath: '/images/user.png',
+						selectedIconPath: '/images/user-active.png'
+					}],
+			},
+		},
+		globalData: {
+			config: null
+		},
+		onLaunch() {
+			qcloud.clearSession();
+			qcloud.setLoginUrl(config.service.loginUrl);
+			this.globalData.style = style;
+		},
+		onShow() {
+		},
+		onHide() {
+		},
+	};
+</script>
+
+<style lang="less">
+	@import "style";
+	@import "common/style/app-panel.wxss";
+	@import 'vendor/font-awsome/fa.wxss';
+	@import 'common/style/fake-button.wxss';
+	
+	page {
+		background-color: @backgroundColor;
+		height: 100%;
+		font-size: @fontSize__text;
+		line-height: 1.5;
+		font-family: -apple-system-font,Helvetica Neue,Helvetica,sans-serif;
+	}
+	.page__hd {
+		padding: 80px;
+	}
+	.page__bd {
+		padding-bottom: 80px;
+	}
+	.page__bd_spacing {
+		padding-left: 30px;
+		padding-right: 30px;
+	}
+	
+	.page__ft{
+		padding-bottom: 20px;
+		text-align: center;
+	}
+	
+	.page__title {
+		text-align: left;
+		font-size: @fontSize__title;
+		font-weight: 400;
+		color: @mainHeadingColor;
+	}
+	
+	.page__desc {
+		margin-top: 10px;
+		font-size: @fontSize__desc;
+		color: @subHeadingColor;
+		text-align: left;
+	}
+	
+	.large-btn-wrapper {
+		padding: 0 30px 0 30px;
+		margin: 30px 0;
+	}
+	
+</style>

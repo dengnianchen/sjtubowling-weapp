@@ -1,0 +1,31 @@
+.app-panel {
+  background: #FFF;
+  border-top: @splitLineColor solid 1px;
+  border-bottom: @splitLineColor solid 1px;
+}
+.app-panel.margin-bottom {
+  margin-bottom: 30px;
+}
+.app-panel__title {
+  display: flex;
+  position: relative;
+  font-size: 28px;
+  color: @darkPromptColor;
+  padding: 0.8em 30px;
+}
+.app-panel__title::after {
+  content: " ";
+  position: absolute;
+  left: 30px;
+  bottom: 0;
+  right: 0;
+  height: 1px;
+  border-bottom: @splitLineColor solid 1px;
+  color: @splitLineColor;
+}
+.app-panel__content {
+  padding-left: 30px;
+  padding-bottom: 10px;
+  font-size: 32px;
+  color: @mainHeadingColor;
+}

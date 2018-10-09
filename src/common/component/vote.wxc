@@ -1,0 +1,196 @@
+<!--
+【专用组件】投票列表组件
+用于显示投票项列表。若提供的数据中包含投票结果，则切换为显示投票结果。
+修改自@minui/select
+-->
+<template xmlns:wx="http://www.w3.org/1999/XSL/Transform">
+	<checkbox-group class="vote__body" bindchange="checkboxChange">
+		<block wx:for="{{items}}" wx:key="item_id" wx:for-index="item_id">
+			<view wx:if="{{item.type==='option'||!result}}" class="vote__item vote__item--{{item.type}}">
+				<view class="vote__bgmask" style="left:{{result?result[item.item_id]:0}}%"></view>
+				<view class="vote__pic">
+					<app-icon wx:if="{{item.picture}}" name="fas fa-image"></app-icon>
+				</view>
+				<view class="vote__text" bindtap="onPictureIconClicked" data-pic="{{item.picture}}">
+					{{item.text}}
+				</view>
+				<block wx:if="{{item.type==='option'}}">
+					<view class="vote__result" wx:if="{{result}}">{{result[item.item_id]}}%</view>
+					<label wx:else>
+						<checkbox class="vote__checkbox"
+						          value="{{item.item_id}}"
+						          checked="{{item.checked}}"
+						          disabled="{{disabled}}"
+						></checkbox>
+					</label>
+				</block>
+				<textarea class="vote__textarea" wx:else
+				          bindinput="onTextareaInput"
+				          data-index="{{item.item_id}}"
+				          placeholder="无"
+				></textarea>
+			</view>
+		</block>
+	</checkbox-group>
+</template>
+
+<script>
+	const util = require("../../utils/index");
+	export default {
+		config: {
+			usingComponents: {
+				"app-icon": "./icon"
+			}
+		},
+		behaviors: [],
+		properties: {
+			items: {
+				type: Object,
+				value: null
+			},
+			result: {
+				type: Object,
+				value: null
+			},
+			maxSelect: {
+				type: Number,
+				value: 1
+			},
+			checked: {
+				type: Array,
+				value: [],
+				observer() {
+					for (let item_id in this.data.items)
+						this.data.items[item_id].checked = false;
+					for (let checkedIndex of this.data.checked)
+						this.data.items[checkedIndex].checked = true;
+					this.setData ({ items: this.data.items });
+				}
+			},
+			text: {
+				type: Object,
+				value: {}
+			},
+			disabled: {
+				type: Boolean,
+				value: false
+			}
+		},
+		data: {
+		
+		},
+		methods: {
+			checkboxChange(e) {
+				if (e.detail.value.length <= this.data.maxSelect) {
+					this.setData({ checked: e.detail.value });
+					this._sendChangeEvent();
+				} else {
+					util.showModel("选择项过多",
+						`选择项不得多于${this.data.maxSelect}个`);
+					let [ ...checked ] = this.data.checked;
+					this.setData({ checked: checked });
+				}
+			},
+			onTextareaInput(e) {
+				console.log(e);
+				let valueText = this.data.text;
+				if (e.detail.value)
+					valueText[e.target.dataset.index] = e.detail.value;
+				else
+					delete valueText[e.target.dataset.index];
+				this.setData({ text: valueText });
+				this._sendChangeEvent();
+				
+			},
+			onPictureIconClicked(e) {
+				if (e.currentTarget.dataset.pic)
+					wx.previewImage({
+						urls: [ e.currentTarget.dataset.pic ]
+					});
+			},
+			_sendChangeEvent() {
+				let value = {};
+				for (let checkIndex of this.data.checked)
+					value[checkIndex] = `${checkIndex}`;
+				util.extend(value, this.data.text);
+				this.triggerEvent('change', { value: value }, {});
+			}
+		}
+	}
+</script>
+
+<style lang="less">
+	@import "../../style.less";
+	
+	@vote_iconWidth: 70px;
+	
+	.vote__body {
+		width: 100%;
+		border-top: 1px solid @splitLineColor;
+		border-bottom: 1px solid @splitLineColor;
+		background: linear-gradient(to right, #FFF, @successColor);
+	}
+	.vote__bgmask {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		background: #FFF;
+	}
+	.vote__item {
+		position: relative;
+		display: flex;
+		align-items: center;
+		min-height: 90px;
+		padding: 10px 0;
+		font-size: @fontSize__desc;
+	}
+	.vote__item--text {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.vote__item::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 30px;
+		right: 0;
+		width: 200%;
+		height: 1px;
+		transform: scale(.5);
+		transform-origin: 0 0;
+		box-sizing: border-box;
+		border-bottom: 1px solid @splitLineColor;
+	}
+	.vote__pic {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: @vote_iconWidth;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: @color__desc;
+	}
+	.vote__text {
+		position: relative;
+		padding-left: @vote_iconWidth;
+		color: @color__text;
+		flex: 1;
+	}
+	.vote__result {
+		position: relative;
+		color: @color__desc;
+		padding: 0 30px;
+	}
+	.vote__checkbox {
+		position: relative;
+		padding: 0 30px;
+	}
+	.vote__textarea {
+		width: 726px - @vote_iconWidth;
+		margin: 10px 24px 10px @vote_iconWidth;
+		height: 3em;
+	}
+</style>

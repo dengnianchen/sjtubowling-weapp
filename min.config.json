@@ -1,0 +1,36 @@
+{
+  "style": {
+	"brandColor": "#FF0077",
+	"controlColor": "#FF5777",
+	"mainHeadingColor": "#333333",
+	"subHeadingColor": "#666666",
+	"darkPromptColor": "#999999",
+	"splitLineColor": "#D3D3D3",
+	"backgroundColor": "#EFEFEF",
+	"successColor": "#28a745",
+	"successBackgroundColor": "#BFFFC9",
+	"warnColor": "#FFC107",
+	"warnBackgroundColor": "#FFF5D9",
+	"dangerColor": "#FF6058",
+	"dangerBackgroundColor": "#FFE6E6"
+  },
+  "prefix": "wxc",
+  "dest": "dist",
+  "npm": {
+	"dest": "dist/packages"
+  },
+  "compilers": {
+	"babel": {
+	  "sourceMaps": "inline",
+	  "presets": [
+		"env"
+	  ],
+	  "plugins": [
+		"syntax-export-extensions",
+		"transform-class-properties",
+		"transform-decorators-legacy",
+		"transform-export-extensions"
+	  ]
+	}
+  }
+}

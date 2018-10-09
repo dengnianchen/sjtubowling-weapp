@@ -1,0 +1,23 @@
+<template>
+	<view class="app-panel margin-bottom" wx:for="{{versions}}" wx:key="index">
+		<view class="app-panel__title">版本号：{{index}}</view>
+		<view class="app-panel__content"><text>{{item}}</text></view>
+	</view>
+</template>
+
+<script>
+	const versions = require('../../versions');
+	
+	export default {
+		config: {
+			navigationBarTitleText: '版本历史',
+			usingComponents: {},
+		},
+		data: {
+			versions: versions
+		},
+	};
+</script>
+
+<style>
+</style>

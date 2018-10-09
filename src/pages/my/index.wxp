@@ -1,0 +1,155 @@
+<template>
+	<form bindsubmit="gotoUserPage" report-submit="{{true}}">
+		<button class="fake-button my-head" form-type="submit"
+		        style="background:{{themeColor[suser.info.gender]}}">
+			<wxc-avatar class="my-head__avatar" src="{{suser.info.photo}}"></wxc-avatar>
+			<view class="my-head__name">{{suser.name}}</view>
+			<wxc-icon class="my-head__arrow" type="arrow-right" size="30" color="#FFF"></wxc-icon>
+		</button>
+	</form>
+	<view class="app-panel" wx:for="{{menuGroup}}" wx:key="mindex"
+	      wx:for-index="mindex" wx:for-item="menu">
+		<app-list wx:for="{{menu}}" wx:key="index"
+		          id="menuitem-{{mindex}}-{{index}}" title="{{item.title}}"
+		          desc="{{item.desc}}" icon="{{item.icon}}"
+		          mode="{{index === menu.length-1 ? 'none': ''}}"
+		          arrow="{{false}}"
+		          bind:click="onMenuItemClick"></app-list>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+	
+	export default {
+		auth: true,
+		
+		config: {
+			navigationBarTitleText: '个人中心',
+			navigationBarBackgroundColor: '#666',
+			navigationBarTextStyle: 'white',
+			usingComponents: {
+				"app-list": "../../common/component/list",
+				"wxc-icon": "@minui/wxc-icon",
+				"wxc-avatar": "@minui/wxc-avatar",
+			},
+		},
+		
+		data: {
+			menuGroup: [
+				[
+					{
+						title: '修改个人信息',
+						icon: 'fas fa-pen',
+						action: () => {
+							wx.navigateTo({
+								url: '/pages/modifyMenu/index',
+							});
+						},
+					},
+					{
+						title: '查看当班情况',
+						icon: 'fas fa-file-invoice-dollar',
+						desc: '建设中……',
+						action: () => {
+							return;
+							wx.navigateTo({
+								url: '/pages/user/index',
+							});
+						},
+					},
+					{
+						title: '站内信',
+						icon: 'fas fa-envelope',
+						desc: '建设中……',
+						action: () => {
+							return;
+							wx.navigateTo({
+								url: '/pages/message/index',
+							});
+						},
+					},
+					{
+						title: '建议反馈',
+						icon: 'fas fa-comment',
+						action: () => {
+							wx.navigateTo({
+								url: '/pages/feedback/index',
+							});
+						},
+					},
+					{
+						title: `当前版本：${util.getLatestVersion()}`,
+						icon: 'fas fa-tags',
+						action: () => {
+							wx.navigateTo({
+								url: '/pages/version/index',
+							});
+						},
+					},
+				],
+			],
+			themeColor: ['#666', '#1a94ff', '#ff1a85'],
+		},
+		
+		onLoad() {
+			wx.setNavigationBarColor({
+				frontColor: '#ffffff',
+				backgroundColor: this.data.themeColor[this.data.suser.info.gender],
+			});
+		},
+		
+		onShow() {
+			// 若当前登录用户信息已经发生变化，则重新加载页面内容
+			if (!this.data.loading &&
+				this.data.suser.version !== util.getCurrentUser().version)
+				this.onLoad();
+		},
+		
+		onMenuItemClick(e) {
+			util.submit(e);
+			const idSplited = e.target.id.split('-');
+			const groupId = parseInt(idSplited[1]);
+			const menuId = parseInt(idSplited[2]);
+			const action = this.data.menuGroup[groupId][menuId].action;
+			if (action !== undefined)
+				action.call(this);
+		},
+		
+		gotoUserPage(e) {
+			util.submit(e);
+			wx.navigateTo({ url: '/pages/user/index' });
+		},
+	};
+</script>
+
+<style lang="less">
+	page {
+		background-color: #F5F5F5;
+	}
+	
+	.my-head {
+		display: flex;
+		align-items: center;
+	}
+	
+	.my-head__avatar {
+		width: 120px;
+		height: 120px;
+		margin: 45px;
+	}
+	
+	.my-head__name {
+		flex-grow: 1;
+		color: #FFF;
+	}
+	
+	.my-head__arrow {
+		margin: 30px;
+	}
+	
+	.app-panel {
+		margin: 0 0 15px 0;
+		border: none;
+	}
+</style>

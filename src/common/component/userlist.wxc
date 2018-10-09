@@ -1,0 +1,122 @@
+<template>
+	<form bindsubmit="gotoUserPage" report-submit="{{true}}">
+		<button class="fake-button list" data-uid="{{item.uid}}" form-type="submit">
+			<wxc-avatar class="list__avatar" mold="square" src="{{item.photo}}">
+			</wxc-avatar>
+			<view class="list__body list__{{mode}}">
+				<view class="list__title">
+					<view class="list__title--main">
+						{{item.name}}
+						<app-rolelabels item="{{item}}" colors="{{roleColors}}"></app-rolelabels>
+					</view>
+					<view class="list__title--sub">
+						{{enums.provinces[item.province]}} |
+						{{enums.departments[item.dept]}} |
+						{{item.grade}}
+					</view>
+				</view>
+			</view>
+		</button>
+	</form>
+</template>
+
+<script>
+	const enums = require('../../utils/enums');
+	const util = require('../../utils/index');
+	
+	export default {
+		config: {
+			usingComponents: {
+				'wxc-avatar': '@minui/wxc-avatar',
+				'wxc-label': '@minui/wxc-label',
+				'wxc-icon': '@minui/wxc-icon',
+				'app-rolelabels': './rolelabels'
+			}
+		},
+		behaviors: [ ],
+		properties: {
+			item: {
+				type: Object,
+				value: '' // 用户信息
+			},
+			mode: {
+				type: String,
+				value: 'normal' // 有边框和无边框 normal, none
+			},
+			roleColors: Object
+		},
+		data: {
+			enums: enums
+		},
+		methods: {
+			gotoUserPage(e) {
+				util.submit(e);
+				wx.navigateTo({
+					url: `/pages/user/index?uid=${e.detail.target.dataset['uid']}`
+				});
+			}
+		}
+	}
+
+
+</script>
+
+<style lang="pcss">
+	@import "common/style/fake-button.wxss";
+	@b list {
+		display: flex;
+		align-items: center;
+		@e avatar {
+			width: 100px;
+			height: 100px;
+		}
+		@e body {
+			display: flex;
+			align-items: center;
+			min-height: 90rpx;
+			line-height: 1.4;
+			padding: 20rpx 30rpx 20rpx 0;
+			margin-left: 30rpx;
+			box-sizing: border-box;
+			border-bottom: 1px solid #ececec;
+			font-size: 32rpx;
+			color: #333;
+			flex-grow: 1;
+		}
+		@e none {
+			border: none;
+		}
+		@e image {
+			width: 38rpx;
+			height: 38rpx;
+			margin-right: 30rpx;
+		}
+		@e icon {
+			margin-right: 30rpx;
+		}
+		@e title {
+			flex: 1;
+			@m sub {
+				margin-top: 14rpx;
+				font-size: 28rpx;
+				line-height: 40rpx;
+				color: #999;
+			}
+		}
+		@e desc {
+			@m dot {
+				width: 16rpx;
+				height: 16rpx;
+				margin-right: 18rpx;
+				border-radius: 16rpx;
+			}
+			@m text {
+				color: #999;
+				font-size: 24rpx;
+			}
+			@m arrow {
+				margin-left: 8rpx;
+			}
+		}
+	}
+</style>

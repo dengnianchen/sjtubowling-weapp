@@ -1,0 +1,89 @@
+<template>
+	<view class="app-panel margin-bottom">
+		<view class="app-panel__content" style="padding-top: 40rpx">
+			<view class="guide__welcome">
+				<view>恭喜你成为球馆大家庭的一员！</view>
+				<view>在开始前，请先完成以下几步操作，谢谢~</view>
+			</view>
+			<app-steps steps="{{steps}}"></app-steps>
+		</view>
+	</view>
+	<view class="large-btn-wrapper">
+		<wxc-button size="large" value="下一步" type="success"
+		            bind:submit="onNextButtonClicked"></wxc-button>
+	</view>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+
+	export default {
+		auth: true,
+		
+		config: {
+			navigationBarTitleText: '欢迎加入球馆',
+			usingComponents: {
+				'app-steps': '../../common/component/step',
+				'wxc-button': '@minui/wxc-button',
+			},
+		},
+		
+		data: {
+			steps: [
+				{
+					title: '完善个人资料',
+					page: '/pages/modifyUserinfo/index'
+				},
+				{
+					title: '上传头像',
+					page: '/pages/modifyAvatar/index'
+				},
+				{
+					title: '勾选空余时间',
+					page: '/pages/modifyFree/index'
+				}
+			]
+		},
+		
+		onLoad(options) {
+			const completion = util.checkUserinfoCompletion(this.data.suser);
+			const steps = this.data.steps;
+			for (let i = 0; i < completion.length; ++i)
+				steps[i].done = completion[i];
+			const from = options.from;
+			this.setData({ steps, from });
+		},
+		
+		onNextButtonClicked(e) {
+			util.submit(e);
+			let workflow = [];
+			for (let s of this.data.steps) {
+				if (!s.done)
+					workflow.push(s.page);
+			}
+			let originPage = "/" + decodeURIComponent(this.data.from);
+			getApp().globalData.work = {
+				step: 0,
+				flow: workflow,
+				successText: "您已完成所有步骤！",
+				next() {
+					this.step++;
+					if (this.step < this.flow.length)
+						wx.redirectTo({ url: this.flow[this.step] });
+					else
+						wx.redirectTo({ url: `/pages/success/index?desc=${this.successText}`});
+				},
+				success() {
+					wx.reLaunch({ url: originPage });
+				}
+			};
+			wx.redirectTo({ url: workflow[0] });
+		}
+	};
+</script>
+
+<style lang="less">
+	.guide__welcome {
+		margin-bottom: 30px;
+	}
+</style>

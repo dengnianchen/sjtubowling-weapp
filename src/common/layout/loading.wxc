@@ -1,0 +1,37 @@
+<template>
+	<view class="app-loading">
+		<view class="app-loading__content">
+			<app-cc src="../../images/loading.gif"
+			        text="加载中" size="120" color="#999999"></app-cc>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {
+				'app-cc': '../component/cc',
+			},
+			
+		},
+		data: {}
+	}
+</script>
+
+<style>
+	.app-loading {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 1000;
+		background: white;
+	}
+	.app-loading__content {
+		width: 100%;
+		height: 90%;
+	}
+	
+</style>
