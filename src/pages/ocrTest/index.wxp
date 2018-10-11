@@ -1,0 +1,32 @@
+<template>
+	<form report="{{true}}" bindsubmit="uploadImage">
+		<button form-type="submit">选择图片</button>
+	</form>
+</template>
+
+<script>
+	const util = require('../../utils/index');
+
+	export default {
+		config: {
+			navigationBarTitleText: 'OCR测试',
+			usingComponents: {},
+		},
+		data: {},
+		uploadImage(e) {
+			wx.chooseImage({
+				count: 1,
+				success: res => {
+					util.upload(e, '/ocr/test', res.tempFilePaths[0], 'attachment').then(data => {
+						util.showModel('识别成功', data);
+					}).catch(ex => {
+						util.showError('识别失败', ex);
+					});
+				}
+			})
+		}
+	};
+</script>
+
+<style>
+</style>

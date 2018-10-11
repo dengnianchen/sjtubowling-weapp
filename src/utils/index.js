@@ -211,22 +211,20 @@ function submit(e, urlWithMethod, data, options) {
 function upload(e, url, file, name, data, options) {
 	if (!e || !e.detail.formId)
 		throw new Error("missing e or e.detail.formId");
-	return submit(e).then(() => {
-		return new Promise((resolve, reject) => {
-			qcloud.upload(extend({}, options, {
-				url: `${config.service.host}/weapp${url}`,
-				header: extend({ 'X-WX-Formid': e.detail.formId },
-					options ? options.header : null),
-				login: true,
-				filePath: file,
-				name: name,
-				formData: data,
-				success: result => {
-					resolve(result.data.data, result)
-				},
-				fail: ex => reject(ex)
-			}));
-		});
+	return new Promise((resolve, reject) => {
+		qcloud.upload(extend({}, options, {
+			url: `${config.service.host}/weapp${url}`,
+			header: extend({ 'X-WX-Formid': e.detail.formId },
+				options ? options.header : null),
+			login: true,
+			filePath: file,
+			name: name,
+			formData: data,
+			success: result => {
+				resolve(result.data.data, result)
+			},
+			fail: ex => reject(ex)
+		}));
 	});
 }
 
