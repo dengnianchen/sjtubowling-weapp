@@ -3,7 +3,7 @@
 > 基于MinUI框架编写（https://github.com/meili/minui）
 
 <p align="center">
-  <img src="https://github.com/dengnianchen/sjtubowling-weapp/blob/master/小程序二维码.jpg"/>
+  <img src="https://github.com/dengnianchen/sjtubowling-weapp/blob/master/小程序二维码.jpg?raw=true"/>
 </p>
 
 ## 功能及入口列表
