@@ -115,7 +115,7 @@
 		},
 		
 		onShow() {
-			this.onLoad();
+			//this.onLoad();
 		},
 		
 		onPullDownRefresh() {
