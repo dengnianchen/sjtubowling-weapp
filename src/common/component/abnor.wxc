@@ -31,9 +31,9 @@
 					if(e.constructor === String)
 						e = { type: e };
 					const data = util.extend({},
-						Types['DEFAULT'], Types[e.type]);
+						Types['DEFAULT'], {}, Types[e.type]);
 					this.setData({
-						image: data.image === '' ? null : `${config.publicUrl}/img/${data.image}`,
+						image: data.image === '' ? null : `/images/error_${data.image}.png`,
 						title: error[e.type] || data.title,
 						button: data.button,
 						tip: e.message || data.tip
@@ -46,7 +46,7 @@
 			}
 		},
 		data: {
-			image: `${config.publicUrl}/img/${Types['DEFAULT'].image}`,
+			image: `/images/error_${Types['DEFAULT'].image}.png`,
 			title: Types['DEFAULT'].title,
 			tip: Types['DEFAULT'].tip,
 			button: Types['DEFAULT'].button

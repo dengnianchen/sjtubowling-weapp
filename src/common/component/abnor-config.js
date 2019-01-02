@@ -1,9 +1,13 @@
 export default {
 	'DEFAULT': {
-		image: 'sorry.png',
+		image: 'default',
 		title: '抱歉，出错啦！',
 		button: '点击重试',
 		tip: ''
+	},
+	'ERR_REQUEST': {
+		image: 'default',
+		button: '点击重试'
 	},
 	'ERR_USER_LEAVE': {
 		image: ''
@@ -18,6 +22,6 @@ export default {
 		image: ''
 	},
 	'ERR_VOTE_NOT_VISIBLE': {
-		image: 'sorry.png'
+		image: 'default'
 	}
 };

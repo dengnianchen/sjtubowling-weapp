@@ -9,24 +9,22 @@
 <script>
 	export default {
 		config: {
+			navigationBarTitleText: '页面加载失败',
 			usingComponents: {
-				'app-abnor': '../component/abnor'
-			}
+				'app-abnor': '../../common/component/abnor'
+			},
 		},
-		properties: {
-			error: {
-				type: Object,
-				value: null
-			}
+		data: {
+			error: null,
+			originPage: null
 		},
-		methods: {
-			onClick(event) {
-				let detail = event.detail;
-				let option = {};
-				this.triggerEvent('click', detail, option);
-			}
+		onLoad(options) {
+		
+		},
+		onClick(event) {
+			// Redirect back to origin page
 		}
-	}
+	};
 </script>
 
 <style lang="less">
@@ -39,6 +37,7 @@
 		z-index: 1000;
 		background: white;
 	}
+	
 	.app-error__content {
 		width: 100%;
 		height: 90%

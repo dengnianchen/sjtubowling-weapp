@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<layout-loading wx:if="{{loading}}"></layout-loading>
-		<layout-error wx:if="{{loadingError}}" error="{{loadingError}}"></layout-error>
+		<layout-error wx:if="{{loadingError}}" error="{{loadingError}}" bindclick="reloadPage"></layout-error>
 		<page></page>
 	</view>
 </template>

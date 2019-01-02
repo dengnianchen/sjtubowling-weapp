@@ -61,7 +61,7 @@
 				if (!s.done)
 					workflow.push(s.page);
 			}
-			let originPage = "/" + decodeURIComponent(this.data.from);
+			let originPage = decodeURIComponent(this.data.from);
 			getApp().globalData.work = {
 				step: 0,
 				flow: workflow,

@@ -35,7 +35,10 @@ const showSuccess = text => wx.showToast({
 	icon: 'success'
 });
 
-// 显示失败提示
+// 隐藏提示框
+const hideToast = () => wx.hideToast();
+
+// 显示失败提示对话框
 const showModel = (title, content) => {
 	wx.hideToast();
 	return new Promise((resolve, reject) => {
@@ -350,7 +353,7 @@ function getConfig(key) {
 }
 
 module.exports = {
-	formatTime, showBusy, showSuccess, showModel, showError, obj2params,
+	formatTime, showBusy, showSuccess, hideToast, showModel, showError, obj2params,
 	isEmptyObject, getWeekNumber, getSysinfo, getScreenSize, rpx2px, px2rpx,
 	extend, request, submit, upload, getCurrentUser, setCurrentUser,
 	preprocessUser, checkUserinfoCompletion, getLatestVersion, md5,

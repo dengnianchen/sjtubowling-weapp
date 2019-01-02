@@ -13,8 +13,8 @@ const CommonError = (function() {
 
 module.exports = {
 	CommonError,
-	ERR_UNKNOWN: '未知错误。',
-	ERR_REQUEST: '无效的请求。',
+	ERR_UNKNOWN: '欧，不知道哪里出错啦！',
+	ERR_REQUEST: '网络貌似不太给力哦！',
 	ERR_FORMAT: '无效的响应格式。',
 	
 	/* 登录相关 */

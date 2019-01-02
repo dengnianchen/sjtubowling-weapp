@@ -111,15 +111,18 @@
 		 * 生命周期函数--监听页面加载
 		 */
 		onLoad() {
-			return this.refreshPage();
+			return this.loadPageContent();
 		},
 		
 		onShow() {
-			//this.onLoad();
+			util.showBusy("加载中…");
+			this.loadPageContent().finally(util.hideToast);
 		},
 		
 		onPullDownRefresh() {
-			this.refreshPage().then(() => {
+			if (this.data.loading || this.data.loadingError)
+				return;
+			this.loadPageContent().then(() => {
 				wx.stopPullDownRefresh();
 			}).catch(ex => {
 				wx.stopPullDownRefresh();
@@ -127,7 +130,7 @@
 			});
 		},
 		
-		refreshPage() {
+		loadPageContent() {
 			return util.request('/common/term').then(term => {
 				this.setData({
 					term: term,

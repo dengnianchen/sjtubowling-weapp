@@ -152,7 +152,7 @@
 		 */
 		redirectBack() {
 			wx.reLaunch({
-				url: "/" + decodeURIComponent(this.data.from)
+				url: decodeURIComponent(this.data.from)
 			})
 		}
 		
