@@ -30,8 +30,7 @@
 					e = e || {};
 					if(e.constructor === String)
 						e = { type: e };
-					const data = util.extend({},
-						Types['DEFAULT'], {}, Types[e.type]);
+					const data = $.extend(Types['DEFAULT'], Types[e.type]);
 					this.setData({
 						image: data.image === '' ? null : `/images/error_${data.image}.png`,
 						title: error[e.type] || data.title,

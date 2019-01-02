@@ -185,33 +185,30 @@
 					return '';
 				const form = this.getRelationNodes('./form')[0];
 				const validators = !form ? {} : form.data.validators;
+				let result = '';
 				if (validate.constructor === String) {
 					// 单一验证，无参数
 					if (validators[validate])
-						return validators[validate](value);
-				}
-				else if (validate.constructor === Array) {
+						result = validators[validate](value);
+				} else if (validate.constructor === Array) {
 					// 单一验证，带参数
 					if (validators[validate[0]]) {
 						let args = validate.slice(1);
 						args.unshift(value);
-						return validators[validate[0]].apply(null, args);
+						result = validators[validate[0]].apply(null, args);
 					}
-				}
-				else {
-					for (let validateFuncName in validate) {
-						// 多重验证
+				} else {
+					// 多重验证
+					$(validate).each((validateFuncName, args) => {
 						if (validators[validateFuncName]) {
-							let args = validate[validateFuncName];
 							args = args ? [ value ].concat(args) : [ value ];
-							const result = validators[validateFuncName].apply(
-								null, args);
+							result = validators[validateFuncName].apply(null, args);
 							if (result)
-								return result;
+								return false;
 						}
-					}
+					});
 				}
-				return '';
+				return result;
 			}
 		},
 	}

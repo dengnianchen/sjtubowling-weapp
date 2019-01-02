@@ -27,8 +27,7 @@
 		methods: {
 			setCustomValidators(customValidators) {
 				this.setData({
-					validators: util.extend({}, defaultValidators,
-						customValidators)
+					validators: $.extend(defaultValidators, customValidators)
 				});
 			},
 			submit(e) {
@@ -70,7 +69,7 @@
 					if (node.data._changed)
 						changedParams[node.data.name] = node.data.value;
 				}
-				this.triggerEvent("submit", util.extend({}, e.detail, {
+				this.triggerEvent("submit", $.extend(e.detail, {
 					params: params,
 					changedParams: changedParams
 				}, {}));

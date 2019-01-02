@@ -46,7 +46,7 @@
 		},
 		
 		onLoad(options) {
-			const completion = util.checkUserinfoCompletion(this.data.suser);
+			const completion = this.data.suser.checkInfoCompletion();
 			const steps = this.data.steps;
 			for (let i = 0; i < completion.length; ++i)
 				steps[i].done = completion[i];

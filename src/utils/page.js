@@ -10,8 +10,8 @@ module.exports = {
 	
 	getPath() {
 		let path = "/" + this.route;
-		if (!util.isEmptyObject(this.options))
-			path += `?${util.obj2params(this.options)}`;
+		if (!$(this.options).isEmpty())
+			path += `?${$(this.options).urlParams()}`;
 		return path;
 	},
 	

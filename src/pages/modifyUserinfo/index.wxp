@@ -29,6 +29,8 @@
 
 <script>
 	
+	const Welib = require('../../welib/index');
+	const User = require('../../models/user');
 	const enums = require('../../utils/enums');
 	const util = require('../../utils/index');
 	
@@ -167,13 +169,12 @@
 		
 		onLoad() {
 			this.selectComponent('#form').setCustomValidators(customValidators);
-			for (let groupName in fields) {
-				let group = fields[groupName];
-				for (let name in fields[groupName]) {
-					group[name].id = 'field-' + name.replace('.', '-');
-					group[name].initValue = util.getValue(this.data.suser, name);
-				}
-			}
+			$(fields).each((groupName, group) => {
+				$(group).each((name, item) => {
+					item.id = 'field-' + name.replace('.', '-');
+					item.initValue = $(this.data.suser).getValue(name);
+				});
+			});
 			this.setData({ fields: fields });
 		},
 		
@@ -193,12 +194,12 @@
 			util.showBusy('保存中……');
 			
 			// 若没有进行任何修改则直接跳转到成功页面
-			if (util.isEmptyObject(e.detail.changedParams))
+			if ($(e.detail.changedParams).isEmpty())
 				return this.onSubmitSuccess();
 			
 			// 提交修改过的字段
 			util.submit(e, 'POST /user', e.detail.changedParams).then(user => {
-				util.setCurrentUser(user);
+				$.Session.set('user', new User(user));
 				return this.onSubmitSuccess();
 			}).catch(ex => {
 				util.showError('保存失败', ex);

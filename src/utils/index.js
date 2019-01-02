@@ -61,19 +61,6 @@ const showError = (title, ex) => {
 		(ex.message === "" ? error[ex.type] : ex.message));
 };
 
-const obj2params = obj => {
-	const params = [];
-	for (let key in obj)
-		params.push(`${key}=${obj[key]}`);
-	return params.join("&");
-};
-
-const isEmptyObject = obj => {
-	for (let key in obj)
-		return false;
-	return true;
-};
-
 /**
  * 计算从指定日期开始的周次
  * @param {String|Date} fromDate 起始日期
@@ -117,19 +104,6 @@ function getScreenSize (unit) {
 		};
 }
 
-function extend(target) {
-	const sources = Array.prototype.slice.call(arguments, 1);
-	for (let i = 0; i < sources.length; i += 1) {
-		const source = sources[i];
-		for (const key in source) {
-			if (source.hasOwnProperty(key)) {
-				target[key] = source[key];
-			}
-		}
-	}
-	return target;
-}
-
 /**
  * qcloud.request方法的Promise封装，URL自动添加根路径，解析请求方法，自适应登录态/非登
  * 录态。
@@ -153,18 +127,18 @@ function request(urlWithMethod, data, options) {
 		const relativeUrl = urlWithMethod.substr(splitPosition + 1);
 		const session = qcloud.Session.get();
 		const requestWithLogin = (options && options.login) || (session && session.skey);
-		const basicRequestOptions = extend({}, options, {
+		const basicRequestOptions = $.extend(options, {
 			url: `${config.service.host}/weapp${relativeUrl}`,
 			method: method,
 			data: data,
 			success: result => resolve(result.data.data, result)
 		});
-		qcloud.request(extend({}, basicRequestOptions, {
+		qcloud.request($.extend(basicRequestOptions, {
 			login: requestWithLogin,
 			fail: ex => {
 				if (ex.statusCode === 401 && !requestWithLogin) {
 					// 以非登录态请求时服务器告知需要登录，则重新尝试以登陆态请求
-					qcloud.request(extend({}, basicRequestOptions, {
+					qcloud.request($.extend(basicRequestOptions, {
 						login: true,
 						fail: ex => reject(ex)
 					}))
@@ -193,8 +167,8 @@ function submit(e, urlWithMethod, data, options) {
 		throw new Error("missing e or e.detail.formId");
 	if (urlWithMethod === undefined)
 		urlWithMethod = "/noop";
-	return request(urlWithMethod, data, extend({}, options, {
-		header: extend({ 'X-WX-Formid': e.detail.formId },
+	return request(urlWithMethod, data, $.extend(options, {
+		header: $.extend({ 'X-WX-Formid': e.detail.formId },
 			options ? options.header : null),
 		login: true
 	}));
@@ -215,9 +189,9 @@ function upload(e, url, file, name, data, options) {
 	if (!e || !e.detail.formId)
 		throw new Error("missing e or e.detail.formId");
 	return new Promise((resolve, reject) => {
-		qcloud.upload(extend({}, options, {
+		qcloud.upload($.extend(options, {
 			url: `${config.service.host}/weapp${url}`,
-			header: extend({ 'X-WX-Formid': e.detail.formId },
+			header: $.extend({ 'X-WX-Formid': e.detail.formId },
 				options ? options.header : null),
 			login: true,
 			filePath: file,
@@ -236,26 +210,6 @@ function getLatestVersion() {
 	return versionNames[0];
 }
 
-function getValue(obj, path) {
-	let keys = path.split(".");
-	for (let key of keys) {
-		obj = obj[key];
-		if (obj === undefined || obj === null)
-			break;
-	}
-	return obj;
-}
-
-function setValue(obj, path, value) {
-	let keys = path.split(".");
-	for (let i = 0; i < keys.length - 1; ++i) {
-		if (obj[keys[i]] === undefined || obj[keys[i]] === null)
-			obj[keys[i]] = {};
-		obj = obj[keys[i]];
-	}
-	obj[keys[keys.length - 1]] = value;
-}
-
 function getConfig(key) {
 	if (!key)
 		return getApp().globalData.config;
@@ -263,8 +217,7 @@ function getConfig(key) {
 }
 
 module.exports = {
-	formatTime, showBusy, showSuccess, hideToast, showModel, showError, obj2params,
-	isEmptyObject, getWeekNumber, getSysinfo, getScreenSize, rpx2px, px2rpx,
-	extend, request, submit, upload, getLatestVersion, md5,
-	getValue, setValue, getConfig
+	formatTime, showBusy, showSuccess, hideToast, showModel, showError,
+	getWeekNumber, getSysinfo, getScreenSize, rpx2px, px2rpx,
+	request, submit, upload, getLatestVersion, md5, getConfig
 };

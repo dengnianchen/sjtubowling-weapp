@@ -78,10 +78,10 @@
 				// Convert result of each item from count to percentage
 				if (vote.result) {
 					let result = {};
-					for (let id in vote.result) {
+					$(vote.result).each((id, count) => {
 						if (id !== "all")
-							result[id] = Math.round(vote.result[id] / vote.result["all"] * 100);
-					}
+							result[id] = Math.round(count / vote.result["all"] * 100);
+					});
 					vote.result = result;
 				}
 				this.setData({ vote: vote });
@@ -100,9 +100,10 @@
 		onSubmit(e) {
 			// Validate count of selected
 			let countOfSelected = 0;
-			for (let index in this.data.voteItems)
-				if (this.data.vote.items[index].type === "option")
+			$(this.data.voteItems).each((index, item) => {
+				if (item.type === "option")
 					countOfSelected++;
+			});
 			if (!countOfSelected) {
 				util.showModel("投票提交失败", "至少选择一个投票项");
 				return;

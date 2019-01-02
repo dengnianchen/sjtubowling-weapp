@@ -1,10 +1,9 @@
-const utils = require('../utils/index');
 const config = require('../config');
 
 class User {
 	
 	constructor(userData) {
-		utils.extend(this, userData);
+		$(this).extend(userData);
 		this._preprocess();
 	}
 	
@@ -18,8 +17,7 @@ class User {
 	
 	numOfFreeTimeSelected() {
 		let n = 0;
-		for (let key in this.timetable)
-			n += this.timetable[key];
+		$(this.timetable).each((key, value) => n += value);
 		return n;
 	}
 	

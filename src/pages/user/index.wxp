@@ -116,6 +116,8 @@
 </template>
 
 <script>
+	const Welib = require('../../welib/index');
+	const User = require('../../models/user');
 	const util = require('../../utils/index');
 	const enums = require('../../utils/enums');
 	
@@ -182,14 +184,14 @@
 				&& options.uid !== this.data.suser.uid) {
 				return util.request(`/user/${options.uid}`).then(user => {
 					this.setData({
-						user: util.preprocessUser(user),
+						user: new User(user),
 						isSelf: false
 					});
 				});
 			} else {
 				return util.request(`/user/${this.data.suser.uid}`).then(user => {
 					this.setData({
-						user: util.preprocessUser(user),
+						user: new User(user),
 						isSelf: true
 					});
 				});
@@ -200,14 +202,14 @@
 			// 若该页面显示的是当前登录用户且重新显示时用户信息已经发生变化，则重新加载页面内容
 			if (!this.data.loading &&
 				this.data.isSelf &&
-				this.data.suser.version !== util.getCurrentUser().version)
+				this.data.suser.version !== $.Session.get('user').version)
 				this.onLoad();
 		},
 		
 		onPullDownRefresh() {
 			util.request(`/user/${this.data.user.uid}`).then(user => {
 				this.setData({
-					user: util.preprocessUser(user)
+					user: new User(user)
 				});
 				wx.stopPullDownRefresh();
 			});

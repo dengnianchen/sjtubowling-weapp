@@ -22,6 +22,8 @@
 </template>
 
 <script>
+	const Welib = require('../../welib/index');
+	const User = require('../../models/user');
 	const util = require('../../utils/index');
 	const enums = require('../../utils/enums');
 	
@@ -65,9 +67,7 @@
 		save(e) {
 			if (!this.data.suser.active)
 				return;
-			let selectedCount = 0;
-			for (let key in this.data.suser.timetable)
-				selectedCount += this.data.suser.timetable[key];
+			let selectedCount = this.data.suser.numOfFreeTimeSelected();
 			const minCount = this.data.global.config.timetable_min_selected;
 			if (selectedCount < minCount) {
 				util.showModel('保存失败', `需要至少勾选${minCount}个空余时间`);
@@ -76,7 +76,7 @@
 			util.showBusy("保存中……");
 			util.submit(e, 'POST /user/timetable', this.data.suser.timetable).then(user => {
 				util.showSuccess("保存成功！");
-				util.setCurrentUser(user);
+				$.Session.set('user', new User(user));
 				setTimeout(() => {
 					if (getApp().globalData.work)
 						getApp().globalData.work.next();

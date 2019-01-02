@@ -161,7 +161,10 @@
 			});
 			util.showBusy('正在加载');
 			util.request(`/user/${isActive ? 'working' : 'leaving'}`).then(userList => {
-				this.setData({ list: util.preprocessUser(userList) });
+				let users = [];
+				for (let rawUserData of userList)
+					users.push(new User(rawUserData));
+				this.setData({ list: users });
 				this.setSortType(0);
 				util.showSuccess('加载成功');
 			}).catch(ex => {
@@ -187,12 +190,7 @@
 				listMap[value].push(item);
 			}
 			const groupedList = [];
-			for (let key in listMap) {
-				groupedList.push({
-					key: key,
-					value: listMap[key],
-				});
-			}
+			$(listMap).each((key, value) => groupedList.push({ key, value }));
 			if (sortOrder === "desc") {
 				if (sortType === 'number')
 					groupedList.sort((a, b) => b.key - a.key);

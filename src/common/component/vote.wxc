@@ -60,8 +60,7 @@
 				type: Array,
 				value: [],
 				observer() {
-					for (let item_id in this.data.items)
-						this.data.items[item_id].checked = false;
+					$(this.data.items).each((id, item) => item.checked = false);
 					for (let checkedIndex of this.data.checked)
 						this.data.items[checkedIndex].checked = true;
 					this.setData ({ items: this.data.items });
@@ -112,7 +111,7 @@
 				let value = {};
 				for (let checkIndex of this.data.checked)
 					value[checkIndex] = `${checkIndex}`;
-				util.extend(value, this.data.text);
+				$(value).extend(this.data.text);
 				this.triggerEvent('change', { value: value }, {});
 			}
 		}
