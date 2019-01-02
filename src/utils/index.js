@@ -231,96 +231,6 @@ function upload(e, url, file, name, data, options) {
 	});
 }
 
-/**
- * 获取当前登录会话的用户信息，若尚未登陆则返回null。
- *
- * @returns {Object|null} 当前登陆会话的用户信息
- * @author Deng Nianchen
- */
-function getCurrentUser() {
-	const session = qcloud.Session.get();
-	if (session && session.user)
-		return preprocessUser(session.user);
-	return null;
-}
-
-/**
- * 设置当前登录会话的用户信息
- *
- * @param {Object} user 用户信息
- * @throws {Error} 缺少参数user或当前登录会话不存在
- * @author Deng Nianchen
- */
-function setCurrentUser(user) {
-	if (!user)
-		throw new Error("Missing parameter 'user'");
-	const session = qcloud.Session.get();
-	if (!session)
-		throw new Error("Session does not exist");
-	session.user = user;
-	qcloud.Session.set(session);
-}
-/**
- * 对服务器传回的用户信息进行预处理：
- * 1. 预处理年级显示格式为统一的三位形式，空显示为未知
- * 2. 转化头像标识为缩略图路径和大图路径方便界面层显示
- *
- * @param {Object|Array} user 用户信息，也可以是用户信息数组
- * @author Deng Nianchen
- */
-function preprocessUser(user) {
-	if (!user)
-		return user;
-	if (user.constructor === Array) {
-		for (const u of user)
-			preprocessUser(u);
-		return user;
-	}
-	
-	if (user.grade !== undefined) {
-		if (!user.grade)
-			user.grade = '未知';
-		else
-			user.grade = user.grade.substr(0, 3);
-	}
-	if (user.info && user.info.photo !== undefined) {
-		if (!user.info.photo) {
-			user.info.fullPhoto = config.defaultAvatar;
-			user.info.photo = config.defaultAvatar;
-		} else {
-			user.info.fullPhoto = config.avatarUrl
-				+ user.info.photo.substr(7);
-			user.info.photo = config.avatarUrl + user.info.photo;
-		}
-	}
-	if (user.photo !== undefined) {
-		if (!user.photo) {
-			user.fullPhoto = config.defaultAvatar;
-			user.photo = config.defaultAvatar;
-		} else {
-			user.fullPhoto = config.avatarUrl
-				+ user.photo.substr(7);
-			user.photo = config.avatarUrl + user.photo;
-		}
-	}
-	return user;
-}
-
-function checkUserinfoCompletion(user) {
-	return [
-		user.info.gender !== 0,
-		user.info.photo !== config.defaultAvatar,
-		!user.active || getTimetableSelectedCount(user) >= getApp().globalData.config.timetable_min_selected
-	];
-}
-
-function getTimetableSelectedCount(user) {
-	let n = 0;
-	for (let key in user.timetable)
-		n += user.timetable[key];
-	return n;
-}
-
 function getLatestVersion() {
 	const versionNames = Object.keys(versions);
 	return versionNames[0];
@@ -355,7 +265,6 @@ function getConfig(key) {
 module.exports = {
 	formatTime, showBusy, showSuccess, hideToast, showModel, showError, obj2params,
 	isEmptyObject, getWeekNumber, getSysinfo, getScreenSize, rpx2px, px2rpx,
-	extend, request, submit, upload, getCurrentUser, setCurrentUser,
-	preprocessUser, checkUserinfoCompletion, getLatestVersion, md5,
+	extend, request, submit, upload, getLatestVersion, md5,
 	getValue, setValue, getConfig
 };
