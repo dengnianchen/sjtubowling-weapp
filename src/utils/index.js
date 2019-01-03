@@ -1,6 +1,6 @@
 const error = require('../error');
 const config = require('../config');
-const qcloud = require('../vendor/wafer2-client-sdk/index');
+const qcloud = require('wafer2-client-sdk');
 const versions = require('../versions');
 const md5 = require('md5');
 
@@ -125,8 +125,11 @@ function request(urlWithMethod, data, options) {
 		const method = splitPosition === -1 ? 'GET' :
 			urlWithMethod.substr(0, splitPosition);
 		const relativeUrl = urlWithMethod.substr(splitPosition + 1);
-		const session = qcloud.Session.get();
-		const requestWithLogin = (options && options.login) || (session && session.skey);
+		let requestWithLogin = false;
+		if (options && options.login)
+			requestWithLogin = true;
+		else if ($.Session.get('skey'))
+			requestWithLogin = true;
 		const basicRequestOptions = $.extend(options, {
 			url: `${config.service.host}/weapp${relativeUrl}`,
 			method: method,

@@ -29,7 +29,6 @@
 
 <script>
 	
-	const Welib = require('../../welib/index');
 	const User = require('../../models/user');
 	const enums = require('../../utils/enums');
 	const util = require('../../utils/index');
@@ -199,7 +198,7 @@
 			
 			// 提交修改过的字段
 			util.submit(e, 'POST /user', e.detail.changedParams).then(user => {
-				$.Session.set('user', new User(user));
+				User.setCurrent(user);
 				return this.onSubmitSuccess();
 			}).catch(ex => {
 				util.showError('保存失败', ex);

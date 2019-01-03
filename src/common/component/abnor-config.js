@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	'DEFAULT': {
 		image: 'default',
 		title: '抱歉，出错啦！',

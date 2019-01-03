@@ -12,7 +12,7 @@
 </template>
 
 <script>
-	import Types from './abnor-config';
+	const Types = require('./abnor-config');
 	const config = require('../../config');
 	const error = require('../../error');
 	const util = require('../../utils/index');

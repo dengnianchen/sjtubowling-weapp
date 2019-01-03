@@ -7,17 +7,18 @@
 </template>
 
 <script>
-	const welib = require('./welib/index');
-	const qcloud = require('./vendor/wafer2-client-sdk/index');
-	const config = require('./config');
-	const util = require('./utils/index');
-	const style = require('./style');
+	require ('@mindev/min-async-function');
+	require ('welib');
+	const qcloud = require('wafer2-client-sdk');
 	const pageUtils = require('./utils/page');
-	
-	
+	const style = require('./style');
+	const util = require('./utils/index');
+	const config = require('./config');
+	const User = require('./models/user');
 	
 	// 微信小程序的Promise类不含有finally函数
 	// 因此需自行实现该函数并插入Promise类的原型中
+	/*
 	Promise.prototype.finally = function(fn) {
 		function finFn() {
 			fn.call(null);
@@ -25,7 +26,7 @@
 		this.then(finFn, finFn);
 		return this;
 	};
-	
+	*/
 	
 	
 	/**
@@ -36,7 +37,7 @@
 	function pageLoading(onLoadFunc, options) {
 		
 		// 尝试获取当前登陆用户
-		let user = $.Session.get('user');
+		let user = User.current;
 		
 		new Promise((resolve, reject) => {
 			// 1. 检查登陆状态并获取绑定的网站用户信息
@@ -46,7 +47,7 @@
 				// 尝试登陆并获取绑定的网站用户信息，若登陆失败或当前微信账号没有绑定网站账号，则跳转到登陆绑定页面
 				qcloud.loginWithCode({
 					success: res => {
-						user = $.Session.get('user');
+						user = User.current;
 						if (user) {
 							this.setData({ suser: user });
 							resolve();
@@ -109,7 +110,7 @@
 	Page = function(page) {
 		
 		// 添加页面数据loading=true，用于显示“加载中”提示画面
-		$(page.data).extend({ loading: true });
+		page.data = $.extend(page.data, { loading: true });
 		// 插入工具函数
 		$(page).extend(pageUtils);
 		
@@ -180,7 +181,6 @@
 			config: null
 		},
 		onLaunch() {
-			welib.init();
 			qcloud.clearSession();
 			qcloud.setLoginUrl(config.service.loginUrl);
 			this.globalData.style = style;

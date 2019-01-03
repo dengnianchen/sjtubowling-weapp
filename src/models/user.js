@@ -21,6 +21,17 @@ class User {
 		return n;
 	}
 	
+	static get current() {
+		let rawUserData = $.Session.get('user');
+		if (!rawUserData)
+			return null;
+		return new User(rawUserData);
+	}
+	
+	static set current(user) {
+		$.Session.set('user', user);
+	}
+	
 	/**
 	 * 对服务器传回的用户信息进行预处理：
 	 * 1. 预处理年级显示格式为统一的三位形式，空显示为未知
@@ -56,3 +67,5 @@ class User {
 	}
 	
 }
+
+module.exports = User;

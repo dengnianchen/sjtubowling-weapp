@@ -116,7 +116,6 @@
 </template>
 
 <script>
-	const Welib = require('../../welib/index');
 	const User = require('../../models/user');
 	const util = require('../../utils/index');
 	const enums = require('../../utils/enums');
@@ -202,7 +201,7 @@
 			// 若该页面显示的是当前登录用户且重新显示时用户信息已经发生变化，则重新加载页面内容
 			if (!this.data.loading &&
 				this.data.isSelf &&
-				this.data.suser.version !== $.Session.get('user').version)
+				this.data.suser.version !== User.current.version)
 				this.onLoad();
 		},
 		

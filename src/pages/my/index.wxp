@@ -19,7 +19,6 @@
 </template>
 
 <script>
-	const Welib = require('../../welib/index');
 	const util = require('../../utils/index');
 	
 	export default {
@@ -103,7 +102,7 @@
 		onShow() {
 			// 若当前登录用户信息已经发生变化，则重新加载页面内容
 			if (!this.data.loading &&
-				this.data.suser.version !== $.Session.get('user').version)
+				this.data.suser.version !== User.current.version)
 				this.onLoad();
 		},
 		

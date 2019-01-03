@@ -22,7 +22,6 @@
 </template>
 
 <script>
-	const Welib = require('../../welib/index');
 	const User = require('../../models/user');
 	const util = require('../../utils/index');
 	const enums = require('../../utils/enums');
@@ -76,7 +75,7 @@
 			util.showBusy("保存中……");
 			util.submit(e, 'POST /user/timetable', this.data.suser.timetable).then(user => {
 				util.showSuccess("保存成功！");
-				$.Session.set('user', new User(user));
+				User.current = user;
 				setTimeout(() => {
 					if (getApp().globalData.work)
 						getApp().globalData.work.next();

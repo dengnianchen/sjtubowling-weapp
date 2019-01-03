@@ -32,10 +32,9 @@
 <script>
 	import WeCropper from '../../vendor/we-cropper/we-cropper';
 	
-	const Welib = require('../../welib/index');
 	const User = require('../../models/user');
 	const util = require('../../utils/index');
-	const qcloud = require('../../vendor/wafer2-client-sdk/index');
+	const qcloud = require('wafer2-client-sdk');
 	
 	let ctxForScale = null;
 	
@@ -115,7 +114,7 @@
 				util.upload(e, '/user/avatar', this.data.cropper.src,
 					'attachment', region).then(user => {
 					util.showSuccess('上传成功！');
-					$.Session.set('user', new User(user));
+					User.setCurrent(user);
 					setTimeout(() => {
 						if (getApp().globalData.work)
 							getApp().globalData.work.next();

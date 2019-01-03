@@ -18,7 +18,7 @@
 </template>
 
 <script>
-	const qcloud = require('../../vendor/wafer2-client-sdk/index');
+	const qcloud = require('wafer2-client-sdk');
 	const config = require('../../config');
 	const util = require('../../utils/index');
 	
