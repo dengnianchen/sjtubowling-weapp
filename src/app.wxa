@@ -7,7 +7,7 @@
 </template>
 
 <script>
-	require ('@mindev/min-async-function');
+	//require ('@mindev/min-async-function');
 	require ('welib');
 	const qcloud = require('wafer2-client-sdk');
 	const pageUtils = require('./utils/page');
@@ -15,128 +15,6 @@
 	const util = require('./utils/index');
 	const config = require('./config');
 	const User = require('./models/user');
-	
-	// 微信小程序的Promise类不含有finally函数
-	// 因此需自行实现该函数并插入Promise类的原型中
-	/*
-	Promise.prototype.finally = function(fn) {
-		function finFn() {
-			fn.call(null);
-		}
-		this.then(finFn, finFn);
-		return this;
-	};
-	*/
-	
-	
-	/**
-	 * 定制页面加载过程，在页面加载前检查登陆状态及用户信息完善状态
-	 * @param onLoadFunc 页面的原始onLoad函数，包含页面本身的加载逻辑
-	 * @param options onLoad函数的参数
-	 */
-	function pageLoading(onLoadFunc, options) {
-		
-		// 尝试获取当前登陆用户
-		let user = User.current;
-		
-		new Promise((resolve, reject) => {
-			// 1. 检查登陆状态并获取绑定的网站用户信息
-			if (!this.auth || user) // 当前页面无需登陆或用户信息已经存在（之前已登陆）
-				resolve();
-			else {
-				// 尝试登陆并获取绑定的网站用户信息，若登陆失败或当前微信账号没有绑定网站账号，则跳转到登陆绑定页面
-				qcloud.loginWithCode({
-					success: res => {
-						user = User.current;
-						if (user) {
-							this.setData({ suser: user });
-							resolve();
-						} else
-							reject("bind");
-					},
-					fail: err => reject("bind")
-				});
-			}
-		}).then(() => new Promise((resolve, reject) => {
-			// 2. 检查当前登陆用户的用户信息是否已完善，若未完善则跳转到新用户指导页面
-			if (!user) // 当前没有登陆用户，也意味着当前页面无需登陆即可访问
-				resolve();
-			else if (getApp().globalData.work ||
-				this.route === "pages/newGuide/index") // 当前正在用户信息完善的过程中
-				resolve();
-			else {
-				// 检查用户信息是否已完善，若没有则跳转到新用户指导页面
-				const completion = user.checkInfoCompletion();
-				let checkResult = true;
-				for (let c of completion) {
-					if (!c) {
-						checkResult = false;
-						reject("fill_info");
-						break;
-					}
-				}
-				if (checkResult)
-					resolve();
-			}
-		})).then(() => {
-			// 3. 设置通用数据并调用onLoad函数（若存在）进行页面加载
-			this.setData({ suser: user, global: getApp().globalData });
-			if (onLoadFunc instanceof Function) { // 当前页面定义了onLoad函数，则继续执行其加载过程
-				const promise = onLoadFunc.call(this, options);
-				// 若当前页面的onLoad函数返回的不是Promise对象，则加载已经完成，
-				// 否则需等待该Promise执行完成后才能认为加载完成
-				if (promise && promise.constructor === Promise)
-					return promise;
-			}
-		}).then(() => this.setLoading(false)).catch((ex) => {
-			if (ex === "bind") // 登陆检查失败，跳转到登陆绑定页面
-				wx.redirectTo({
-					url: `../bind/index?from=${encodeURIComponent(this.getPath())}`,
-				});
-			else if (ex === "fill_info") // 用户信息尚未完善，跳转到新用户指导页面
-				wx.redirectTo({
-					url: `../newGuide/index?from=${encodeURIComponent(this.getPath())}`,
-				});
-			else // 页面加载失败，显示错误界面
-				this.setLoading(false, ex);
-		});
-		
-	}
-	
-	
-	
-	// 包装微信小程序默认的Page函数，可以在小程序对页面初始化前进行一些额外操作
-	const originPageFunction = Page;
-	Page = function(page) {
-		
-		// 添加页面数据loading=true，用于显示“加载中”提示画面
-		page.data = $.extend(page.data, { loading: true });
-		// 插入工具函数
-		$(page).extend(pageUtils);
-		
-		// 包装onLoad函数，进行加载时的通用操作
-		const pageOnLoad = page.onLoad;
-		page.onLoad = function(options) {
-			this.setLoading(true);
-			Promise.resolve().then(() => {
-				if (!util.getConfig()) { // 若当前不存在全局配置信息，则先加载之
-					// 全局配置信息存在app对象中，因此仅在小程序运行后的第一个页面加载时需要从服务器获取
-					return util.request("/common/config").
-						then(config => getApp().globalData.config = config);
-				}
-			}).then (() => {
-				pageLoading.call(this, pageOnLoad, options)
-			}).catch(ex => {
-				this.setLoading(false, ex)
-			});
-		};
-		
-		// 调用小程序默认的Page函数进行页面初始化
-		originPageFunction(page);
-		
-	};
-
-	
 	
 	export default {
 		config: {
@@ -178,12 +56,59 @@
 			},
 		},
 		globalData: {
-			config: null
+			config: null,
+			style
 		},
 		onLaunch() {
-			qcloud.clearSession();
-			qcloud.setLoginUrl(config.service.loginUrl);
-			this.globalData.style = style;
+			// 定制页面加载过程，在页面加载前载入全局配置信息、检查登陆状态及用户信息完善状态
+			let pageLoading = async function() {
+				let _this = this;
+				let redirectToBind = () => wx.redirectTo({
+					url: `../bind/index?from=${_this.getPathEncoded()}`,
+				});
+				let redirectToFillInfo = () => wx.redirectTo({
+					url: `../newGuide/index?from=${_this.getPathEncoded()}`,
+				});
+				
+				// 1. 若当前不存在全局配置信息，则先加载之
+				//    全局配置信息存在app对象中，因此仅在小程序运行后的第一个页面加载时需要从服务器获取
+				if (!util.getConfig())
+					$.App.config = await $.Http.request("/common/config");
+				
+				// 2. 尝试获取当前登陆用户
+				let user = User.current;
+				
+				// 3. 尝试登陆并获取绑定的网站用户信息
+				//    前提条件：当前页面需要登录才能访问，且当前用户不存在
+				//    若登陆失败或当前微信账号没有绑定网站账号，则跳转到登陆绑定页面
+				if (this.auth && !user) {
+					try {
+						await $.Http.login();
+					} catch (ex) {
+						return redirectToBind();
+					}
+					user = User.current;
+					if (!user)
+						return redirectToBind();
+					this.setData({ suser: user });
+				}
+				
+				// 4. 检查当前登陆用户的用户信息是否已完善，若未完善则跳转到新用户指导页面
+				//    前提条件：当前用户存在，且不在用户信息完善的过程中
+				if (user && !getApp().globalData.work && this.route !== "pages/newGuide/index") {
+					const completion = user.checkInfoCompletion();
+					for (let c of completion) {
+						if (!c)
+							return redirectToFillInfo();
+					}
+				}
+			};
+			
+			// 初始化Welib库
+			$.initial({
+				host: config.service.host + "/weapp",
+				pageBeforeLoad: pageLoading
+			});
 		},
 		onShow() {
 		},
