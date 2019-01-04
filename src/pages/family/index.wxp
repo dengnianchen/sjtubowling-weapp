@@ -1,4 +1,4 @@
-<template>
+<template xmlns:wx="http://www.w3.org/1999/xhtml">
 	<form bindsubmit="doTopbarAction" report-submit="{{true}}">
 		<view class="page__topbar" style="height:{{topbarHeight}}rpx">
 			<button class="fake-button topbar__item" form-type="submit"
