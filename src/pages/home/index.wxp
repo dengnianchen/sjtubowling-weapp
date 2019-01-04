@@ -1,4 +1,4 @@
-<template>
+<template xmlns:wx="http://www.w3.org/1999/xhtml">
 	<view class="home">
 		<view class="home-banner" style="background-image: url({{bannerImageUrl}})">
 			<view class="home-banner__now">现在是{{term.name}}第{{week}}周</view>
@@ -34,7 +34,7 @@
 						员工：
 						<block wx:for="{{classinfo.staffs}}" wx:key="uid"
 						       wx:for-item="staff">
-							{{index === 0 ? "" : "，"}}{{staff.staff_name}}
+							{{index === 0 ? '' : '，'}}{{staff.staff_name}}
 						</block>
 					</view>
 					<view class="schedule-table__row-icon" wx:if="{{classinfo.myclass}}">

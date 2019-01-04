@@ -130,6 +130,10 @@ function request(urlWithMethod, data, options) {
 			requestWithLogin = true;
 		else if ($.Session.get('skey'))
 			requestWithLogin = true;
+		
+		// DEBUG: 打印请求的登陆态信息
+		console.log(`request ${urlWithMethod}${requestWithLogin?' with login':''}: options.login=${options&&options.login}, session.skey=${$.Session.get('skey')}`);
+		
 		const basicRequestOptions = $.extend(options, {
 			url: `${config.service.host}/weapp${relativeUrl}`,
 			method: method,
