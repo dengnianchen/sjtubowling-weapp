@@ -39,21 +39,22 @@
 			this.content = e.detail.value;
 		},
 		
-		submitFeedback(e) {
+		async submitFeedback(e) {
 			if (this.content === '') {
 				this.setData({ textfieldError: true });
 				return;
 			}
 			this.setData({ textfieldError: false });
-			util.submit(e, 'PUT /feedback', { content: this.content }).then(() => {
+			try {
+				await $.Http.submit(e, 'PUT /feedback', { content: this.content });
 				wx.redirectTo({
 					url: '../success/index?desc=建议反馈已提交，感谢您对开发组的支持！',
 				});
-			}).catch(ex => {
+			} catch (ex) {
 				util.showError('提交失败', ex);
 				console.log('提交失败', ex);
 				this.setData({ submitInProcess: false });
-			});
+			}
 		},
 		
 	};

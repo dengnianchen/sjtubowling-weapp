@@ -110,65 +110,69 @@
 		/**
 		 * 生命周期函数--监听页面加载
 		 */
-		onLoad() {
-			return this.loadPageContent();
+		async onLoad() {
+			await this.loadPageContent();
 		},
 		
-		onShow() {
+		async onShow() {
 			util.showBusy("加载中…");
-			this.loadPageContent().finally(util.hideToast);
+			await this.loadPageContent();
+			util.hideToast();
 		},
 		
-		onPullDownRefresh() {
+		async onPullDownRefresh() {
 			if (this.data.loading || this.data.loadingError)
 				return;
-			this.loadPageContent().then(() => {
-				wx.stopPullDownRefresh();
-			}).catch(ex => {
-				wx.stopPullDownRefresh();
+			try {
+				await this.loadPageContent();
+			} catch (ex) {
 				this.setData({ loadingError: ex });
-			});
+			} finally {
+				wx.stopPullDownRefresh();
+			}
 		},
 		
-		loadPageContent() {
-			return util.request('/common/term').then(term => {
-				this.setData({
-					term: term,
-					week: util.getWeekNumber(term.begin_date)
-				});
-				
-				// Request brief info for top menu
-				util.request('/vote/visible').then(votes => {
-					if (votes.length)
-						this.data.topMenu[0].desc = `正在进行${votes.length}项投票`;
-					let hasUnvoted = false;
-					for (let vote of votes)
-						if (!vote.is_voted) {
-							hasUnvoted = true;
-							break;
-						}
-					this.data.topMenu[0].dot = hasUnvoted;
-					this.setData({ topMenu: this.data.topMenu });
-				}).catch(ex => {
-					this.data.topMenu[0].desc = "";
-					this.data.topMenu[0].dot = false;
-					this.setData({ topMenu: this.data.topMenu });
-				});
-				
-				// Request post and schedule
-				return Promise.all([
-					util.request(`/schedule/public/${this.data.week}`).then(schedule => {
-						if (schedule) {
-							this.sortSchedule(schedule);
-							this.markMyClass(schedule);
-						}
-						this.setData({ schedule: schedule });
-					}),
-					util.request('/post/normal').then(post => {
-						this.setData({ post: post });
-					})
-				]);
+		async loadPageContent() {
+			// 获取当前学期信息
+			let term = await $.Http.request('/common/term');
+			this.setData({
+				term: term,
+				week: util.getWeekNumber(term.begin_date)
 			});
+			
+			// 获取投票简要信息
+			try {
+				let votes = await $.Http.request('/vote/visible');
+				if (votes.length)
+					this.data.topMenu[0].desc = `正在进行${votes.length}项投票`;
+				let hasUnvoted = false;
+				for (let vote of votes)
+					if (!vote.is_voted) {
+						hasUnvoted = true;
+						break;
+					}
+				this.data.topMenu[0].dot = hasUnvoted;
+				
+			} catch (ex) {
+				this.data.topMenu[0].desc = "";
+				this.data.topMenu[0].dot = false;
+			} finally {
+				this.setData({ topMenu: this.data.topMenu });
+			}
+			
+			// 获取最新的例会记录和班表
+			return Promise.all([
+				$.Http.request(`/schedule/public/${this.data.week}`).then(schedule => {
+					if (schedule) {
+						this.sortSchedule(schedule);
+						this.markMyClass(schedule);
+					}
+					this.setData({ schedule: schedule });
+				}),
+				$.Http.request('/post/normal').then(post => {
+					this.setData({ post: post });
+				})
+			]);
 		},
 		
 		markMyClass(schedule) {
@@ -191,7 +195,7 @@
 		},
 		
 		onTopMenuItemClick(e) {
-			util.submit(e);
+			$.Http.submit(e);
 			const idSplited = e.target.id.split('-');
 			const menuId = parseInt(idSplited[1]);
 			const action = this.data.topMenu[menuId].action;

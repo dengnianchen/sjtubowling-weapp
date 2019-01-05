@@ -107,7 +107,7 @@
 		},
 		
 		onMenuItemClick(e) {
-			util.submit(e);
+			$.Http.submit(e);
 			const idSplited = e.target.id.split('-');
 			const groupId = parseInt(idSplited[1]);
 			const menuId = parseInt(idSplited[2]);
@@ -117,7 +117,7 @@
 		},
 		
 		gotoUserPage(e) {
-			util.submit(e);
+			$.Http.submit(e);
 			wx.navigateTo({ url: '/pages/user/index' });
 		},
 	};

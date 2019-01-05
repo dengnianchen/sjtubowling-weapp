@@ -50,42 +50,42 @@
 		data: {
 			voteItems: {}
 		},
-		onLoad(options) {
+		async onLoad(options) {
 			if (options.id === undefined)
 				throw new Error();
-			return util.request(`/vote/${options.id}`).then(vote => {
-				// Check permission
-				if (!this.data.suser.active && !vote.oldstaff_visible)
-					throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅在职员工可见！");
-				if (this.data.suser.position === 0 && !vote.staff_visible)
-					throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅经理可见！");
-				if (this.data.suser.position !== 0 && !vote.manager_visible)
-					throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅员工可见！");
-				
-				// Reorganize items as key-value structure
-				let items = {};
-				for (let item of vote.items) {
-					if (item.picture)
-						item.picture = `${config.storageUrl}/vote/${item.picture}`;
-					items[item.item_id] = item;
-				}
-				vote.items = items;
-				
-				// Set 'expired' if deadline has past
-				if (vote.deadline)
-					vote.expired = new Date () > new Date (vote.deadline);
-				
-				// Convert result of each item from count to percentage
-				if (vote.result) {
-					let result = {};
-					$(vote.result).each((id, count) => {
-						if (id !== "all")
-							result[id] = Math.round(count / vote.result["all"] * 100);
-					});
-					vote.result = result;
-				}
-				this.setData({ vote: vote });
-			});
+			let vote = await $.Http.request(`/vote/${options.id}`);
+			
+			// Check permission
+			if (!this.data.suser.active && !vote.oldstaff_visible)
+				throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅在职员工可见！");
+			if (this.data.suser.position === 0 && !vote.staff_visible)
+				throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅经理可见！");
+			if (this.data.suser.position !== 0 && !vote.manager_visible)
+				throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅员工可见！");
+			
+			// Reorganize items as key-value structure
+			let items = {};
+			for (let item of vote.items) {
+				if (item.picture)
+					item.picture = `${config.storageUrl}/vote/${item.picture}`;
+				items[item.item_id] = item;
+			}
+			vote.items = items;
+			
+			// Set 'expired' if deadline has past
+			if (vote.deadline)
+				vote.expired = new Date () > new Date (vote.deadline);
+			
+			// Convert result of each item from count to percentage
+			if (vote.result) {
+				let result = {};
+				$(vote.result).each((id, count) => {
+					if (id !== "all")
+						result[id] = Math.round(count / vote.result["all"] * 100);
+				});
+				vote.result = result;
+			}
+			this.setData({ vote: vote });
 		},
 		onShareAppMessage(res) {
 			return {
@@ -97,7 +97,7 @@
 		onChange(e) {
 			this.setData({ voteItems: e.detail.value });
 		},
-		onSubmit(e) {
+		async onSubmit(e) {
 			// Validate count of selected
 			let countOfSelected = 0;
 			$(this.data.voteItems).each((index, item) => {
@@ -116,7 +116,8 @@
 			// Submit vote
 			const voteId = this.data.vote.id;
 			this.setData ({ saveInProgress: true });
-			util.submit(e, `PUT /vote/${voteId}`, this.data.voteItems).then(() => {
+			try {
+				await $.Http.submit(e, `PUT /vote/${voteId}`, this.data.voteItems);
 				// Refresh page to show vote result
 				this.setData({
 					vote: null,
@@ -124,7 +125,7 @@
 					voteItems: {}
 				});
 				this.onLoad({ id: voteId });
-			}).catch(ex => {
+			} catch (ex) {
 				// If the vote is already submitted,
 				// just refresh page (as success callback do)
 				if (ex.type === error.ERR_DUPLICATE_SUBMIT) {
@@ -138,7 +139,7 @@
 				}
 				util.showError("投票提交失败", ex);
 				this.setData ({ saveInProgress: false });
-			});
+			}
 		}
 	};
 </script>

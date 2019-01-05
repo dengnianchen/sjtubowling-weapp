@@ -188,7 +188,7 @@
 			}
 		},
 		
-		onSubmit(e) {
+		async onSubmit(e) {
 			console.log(e);
 			util.showBusy('保存中……');
 			
@@ -197,13 +197,14 @@
 				return this.onSubmitSuccess();
 			
 			// 提交修改过的字段
-			util.submit(e, 'POST /user', e.detail.changedParams).then(user => {
-				User.setCurrent(user);
+			try {
+				User.current = await $.Http.submit(e, 'POST /user',
+					e.detail.changedParams);
 				return this.onSubmitSuccess();
-			}).catch(ex => {
+			} catch (ex) {
 				util.showError('保存失败', ex);
 				console.log('保存失败', ex);
-			});
+			}
 		},
 		
 		onSubmitSuccess() {

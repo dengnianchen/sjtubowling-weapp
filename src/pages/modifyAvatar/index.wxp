@@ -109,27 +109,27 @@
 		},
 		
 		uploadAvatar(e) {
-			this.wecropper.getCropperRegion(region => {
-				util.showBusy('上传中……');
-				util.upload(e, '/user/avatar', this.data.cropper.src,
-					'attachment', region).then(user => {
+			this.wecropper.getCropperRegion(async region => {
+				try {
+					util.showBusy('上传中……');
+					let user = await $.Http.upload(e, '/user/avatar',
+						this.data.cropper.src, 'attachment', region);
 					util.showSuccess('上传成功！');
-					User.setCurrent(user);
+					User.current = user;
 					setTimeout(() => {
 						if (getApp().globalData.work)
 							getApp().globalData.work.next();
 						else
 							wx.navigateBack();
 					}, 1000);
-				}).catch(ex => {
+				} catch (ex) {
 					util.showError('上传失败', ex);
-				});
+				}
 			});
 		},
 		
 		selectPicture(e) {
-			if (e)
-				util.submit(e);
+			e && $.Http.submit(e);
 			wx.chooseImage({
 				count: 1,
 				success: res => {

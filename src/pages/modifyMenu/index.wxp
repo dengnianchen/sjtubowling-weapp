@@ -45,7 +45,7 @@
 			],
 		},
 		onMenuItemClick(e) {
-			util.submit(e);
+			$.Http.submit(e);
 			const idSplited = e.target.id.split('-');
 			const menuId = parseInt(idSplited[1]);
 			const action = this.data.menu[menuId].action;

@@ -1,6 +1,4 @@
 const error = require('../error');
-const config = require('../config');
-const qcloud = require('wafer2-client-sdk');
 const versions = require('../versions');
 const md5 = require('md5');
 
@@ -104,114 +102,6 @@ function getScreenSize (unit) {
 		};
 }
 
-/**
- * qcloud.request方法的Promise封装，URL自动添加根路径，解析请求方法，自适应登录态/非登
- * 录态。
- * 若成功则提供(data, result)，其中data为响应对象中的数据，result为原始响应对象。
- * 若失败则提供ex，包含错误信息。
- *
- * @param {String}  urlWithMethod 包含请求方法的URL相对路径，格式为：[method] url。
- *                                若省略请求方法则默认为GET。
- *                                范例："PUT /user", "/user" = "GET /user"
- * @param {Object?} data          随请求提交的数据
- * @param {Object?} options       请求选项，同request函数的options，但是忽略
- *                                url, method, data, success, fail五个选项
- * @return {Promise}
- * @author Deng Nianchen
- */
-function request(urlWithMethod, data, options) {
-	return new Promise((resolve, reject) => {
-		const splitPosition = urlWithMethod.indexOf(' ');
-		const method = splitPosition === -1 ? 'GET' :
-			urlWithMethod.substr(0, splitPosition);
-		const relativeUrl = urlWithMethod.substr(splitPosition + 1);
-		let requestWithLogin = false;
-		if (options && options.login)
-			requestWithLogin = true;
-		else if ($.Session.get('skey'))
-			requestWithLogin = true;
-		
-		// DEBUG: 打印请求的登陆态信息
-		console.log(`request ${urlWithMethod}${requestWithLogin?' with login':''}: options.login=${options&&options.login}, session.skey=${$.Session.get('skey')}`);
-		
-		const basicRequestOptions = $.extend(options, {
-			url: `${config.service.host}/weapp${relativeUrl}`,
-			method: method,
-			data: data,
-			success: result => resolve(result.data.data, result)
-		});
-		qcloud.request($.extend(basicRequestOptions, {
-			login: requestWithLogin,
-			fail: ex => {
-				if (ex.statusCode === 401 && !requestWithLogin) {
-					// 以非登录态请求时服务器告知需要登录，则重新尝试以登陆态请求
-					qcloud.request($.extend(basicRequestOptions, {
-						login: true,
-						fail: ex => reject(ex)
-					}))
-				} else
-					reject(ex);
-			}
-		}));
-	});
-}
-
-/**
- * 基本功能和request函数一致，提交请求时将包含由submit事件提供的表单ID到请求头（并自动登
- * 陆）。
- * 注：仅在访问受限的资源路径（需要登陆才能访问的路径）时表单ID才会被后台收集。
- *
- * @param {Object}  e             表单提交事件
- * @param {String?} urlWithMethod 包含请求方法的URL相对路径，见request函数。未指定则
- *                                默认为 /noop
- * @param {Object?} data          随请求提交的数据
- * @param {Object?} options       请求选项，见request函数
- * @return {Promise}
- * @author Deng Nianchen
- */
-function submit(e, urlWithMethod, data, options) {
-	if (!e || !e.detail.formId)
-		throw new Error("missing e or e.detail.formId");
-	if (urlWithMethod === undefined)
-		urlWithMethod = "/noop";
-	return request(urlWithMethod, data, $.extend(options, {
-		header: $.extend({ 'X-WX-Formid': e.detail.formId },
-			options ? options.header : null),
-		login: true
-	}));
-}
-
-/**
- * 上传文件。该方法始终以登录态发起请求，并添加由submit事件提供的表单ID到请求头。
- *
- * @param {Object}  e       表单提交事件
- * @param {String}  url     URL相对路径
- * @param {String}  file    要上传的文件路径
- * @param {String}  name    提供给服务器的文件名
- * @param {Object?} data    随请求提交的数据
- * @param {Object?} options 请求选项，见request函数
- * @returns {Promise}
- */
-function upload(e, url, file, name, data, options) {
-	if (!e || !e.detail.formId)
-		throw new Error("missing e or e.detail.formId");
-	return new Promise((resolve, reject) => {
-		qcloud.upload($.extend(options, {
-			url: `${config.service.host}/weapp${url}`,
-			header: $.extend({ 'X-WX-Formid': e.detail.formId },
-				options ? options.header : null),
-			login: true,
-			filePath: file,
-			name: name,
-			formData: data,
-			success: result => {
-				resolve(result.data.data, result)
-			},
-			fail: ex => reject(ex)
-		}));
-	});
-}
-
 function getLatestVersion() {
 	const versionNames = Object.keys(versions);
 	return versionNames[0];
@@ -226,5 +116,5 @@ function getConfig(key) {
 module.exports = {
 	formatTime, showBusy, showSuccess, hideToast, showModel, showError,
 	getWeekNumber, getSysinfo, getScreenSize, rpx2px, px2rpx,
-	request, submit, upload, getLatestVersion, md5, getConfig
+	getLatestVersion, md5, getConfig
 };

@@ -50,7 +50,7 @@
 		},
 		methods: {
 			gotoUserPage(e) {
-				util.submit(e);
+				$.Http.submit(e);
 				wx.navigateTo({
 					url: `/pages/user/index?uid=${e.detail.target.dataset['uid']}`
 				});

@@ -42,17 +42,16 @@
 			weekdays: enums.weekdays,
 		},
 		
-		onLoad() {
+		async onLoad() {
 			if (this.data.suser.active)
 				this.setData({ notice: `请至少勾选${this.data.global.config.timetable_min_selected}个空余时间。` });
 			else
 				this.setData({ notice: "您已离职，无法修改空余时间。" });
-			return util.request('/common/class_config').then(data => {
-				const classConfig = {};
-				for (const item of data)
-					classConfig[item.name] = item;
-				this.setData({ classConfig: classConfig });
-			});
+			let data = await $.Http.request('/common/class_config');
+			const classConfig = {};
+			for (const item of data)
+				classConfig[item.name] = item;
+			this.setData({ classConfig: classConfig });
 		},
 		
 		onItemClicked(e) {
@@ -63,7 +62,7 @@
 			this.setData({ suser });
 		},
 		
-		save(e) {
+		async save(e) {
 			if (!this.data.suser.active)
 				return;
 			let selectedCount = this.data.suser.numOfFreeTimeSelected();
@@ -73,7 +72,9 @@
 				return;
 			}
 			util.showBusy("保存中……");
-			util.submit(e, 'POST /user/timetable', this.data.suser.timetable).then(user => {
+			try {
+				let user = await $.Http.submit(e, 'POST /user/timetable',
+					this.data.suser.timetable);
 				util.showSuccess("保存成功！");
 				User.current = user;
 				setTimeout(() => {
@@ -82,9 +83,9 @@
 					else
 						wx.navigateBack();
 				}, 1000);
-			}).catch(ex => {
+			} catch (ex) {
 				util.showError('保存失败', ex);
-			});
+			}
 		}
 		
 	};

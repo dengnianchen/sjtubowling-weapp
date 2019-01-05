@@ -9,8 +9,6 @@
 <script>
 	//require ('@mindev/min-async-function');
 	require ('welib');
-	const qcloud = require('wafer2-client-sdk');
-	const pageUtils = require('./utils/page');
 	const style = require('./style');
 	const util = require('./utils/index');
 	const config = require('./config');

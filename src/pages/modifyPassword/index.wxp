@@ -60,20 +60,21 @@
 			this.selectComponent('#form').setCustomValidators(customValidators);
 		},
 		
-		onSubmit(e) {
+		async onSubmit(e) {
 			console.log(e);
 			util.showBusy('保存中……');
 			const passwordToSubmit = util.md5(e.detail.params.password);
 			
-			util.submit(e, 'POST /user/password', {
-				password: passwordToSubmit
-			}).then(() => {
+			try {
+				await $.Http.submit(e, 'POST /user/password', {
+					password: passwordToSubmit
+				});
 				util.showSuccess('保存成功！');
 				setTimeout(() => wx.navigateBack(), 1000);
-			}).catch(ex => {
+			} catch(ex) {
 				util.showError('保存失败', ex);
 				console.log('保存失败', ex);
-			});
+			}
 		}
 	};
 </script>

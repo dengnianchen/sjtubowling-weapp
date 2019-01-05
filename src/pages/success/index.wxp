@@ -30,7 +30,7 @@
 		
 		back(e) {
 			if (this.data.suser)
-				util.submit(e);
+				$.Http.submit(e);
 			if (getApp().globalData.work) {
 				let workSuccess = getApp().globalData.work.success;
 				getApp().globalData.work = null;

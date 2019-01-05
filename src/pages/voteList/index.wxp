@@ -35,17 +35,17 @@
 		
 		data: {},
 		
-		onLoad() {
-			return util.request('/vote/visible').then(votes => {
-				// Set 'expired' if deadline has past
-				for (let vote of votes)
-					if (vote.deadline)
-						vote.expired = new Date () > new Date (vote.deadline);
-				this.setData({ votes: votes });
-			});
+		async onLoad() {
+			let votes = await $.Http.request('/vote/visible');
+			// Set 'expired' if deadline has past
+			for (let vote of votes)
+				if (vote.deadline)
+					vote.expired = new Date () > new Date (vote.deadline);
+			this.setData({ votes: votes });
 		},
+		
 		onListItemClicked(e) {
-			util.submit(e);
+			$.Http.submit(e);
 			const idSplited = e.target.id.split('-');
 			const voteId = parseInt(idSplited[1]);
 			wx.navigateTo({

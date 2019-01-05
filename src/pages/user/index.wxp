@@ -178,21 +178,19 @@
 		/**
 		 * 生命周期函数--监听页面加载
 		 */
-		onLoad(options) {
+		async onLoad(options) {
 			if (options.uid !== undefined
 				&& options.uid !== this.data.suser.uid) {
-				return util.request(`/user/${options.uid}`).then(user => {
-					this.setData({
-						user: new User(user),
-						isSelf: false
-					});
+				let user = await $.Http.request(`/user/${options.uid}`);
+				this.setData({
+					user: new User(user),
+					isSelf: false
 				});
 			} else {
-				return util.request(`/user/${this.data.suser.uid}`).then(user => {
-					this.setData({
-						user: new User(user),
-						isSelf: true
-					});
+				let user = await $.Http.request(`/user/${this.data.suser.uid}`);
+				this.setData({
+					user: new User(user),
+					isSelf: true
 				});
 			}
 		},
@@ -205,13 +203,12 @@
 				this.onLoad();
 		},
 		
-		onPullDownRefresh() {
-			util.request(`/user/${this.data.user.uid}`).then(user => {
-				this.setData({
-					user: new User(user)
-				});
-				wx.stopPullDownRefresh();
+		async onPullDownRefresh() {
+			let user = await $.Http.request(`/user/${this.data.user.uid}`);
+			this.setData({
+				user: new User(user)
 			});
+			wx.stopPullDownRefresh();
 		},
 		
 		onPageScroll(e) {
@@ -246,7 +243,7 @@
 		
 		onBmenuItemClicked(event) {
 			if (event.detail.formId)
-				util.submit(event);
+				$.Http.submit(event);
 			this.data.bottomMenu[event.detail.value].action.apply(this);
 		}
 		

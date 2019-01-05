@@ -151,7 +151,7 @@
 			this.setData({ scrollToIndex: e.detail.value });
 		},
 		
-		listUsers(isActive) {
+		async listUsers(isActive) {
 			wx.setNavigationBarTitle({
 				title: `全家福 - ${isActive ? '在职员工' : '离职员工'}`,
 			});
@@ -159,18 +159,18 @@
 				frontColor: '#ffffff',
 				backgroundColor: isActive ? '#00aeef' : '#898989',
 			});
-			util.showBusy('正在加载');
-			util.request(`/user/${isActive ? 'working' : 'leaving'}`).then(userList => {
+			try {
+				util.showBusy('正在加载');
+				let userList = await $.Http.request(`/user/${isActive ? 'working' : 'leaving'}`);
 				let users = [];
 				for (let rawUserData of userList)
 					users.push(new User(rawUserData));
 				this.setData({ list: users });
 				this.setSortType(0);
 				util.showSuccess('加载成功');
-			}).catch(ex => {
+			} catch(ex) {
 				util.showError('加载失败', ex);
-				console.log('加载失败', ex);
-			});
+			}
 		},
 		
 		setSortType(sortTypeIndex) {
@@ -210,7 +210,7 @@
 		},
 		
 		doTopbarAction(e) {
-			util.submit(e);
+			$.Http.submit(e);
 			this[e.detail.target.dataset["action"]].call(this);
 		}
 		
