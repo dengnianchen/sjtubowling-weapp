@@ -1,7 +1,7 @@
 <template>
 	<view class="app-error">
 		<view class="app-error__content">
-			<app-abnor error="{{error}}" bindabnortap="onClick" showButton="{{true}}"></app-abnor>
+			<wui-abnor error="{{error}}" bindabnortap="onClick" showButton="{{true}}"></wui-abnor>
 		</view>
 	</view>
 </template>
@@ -10,7 +10,7 @@
 	export default {
 		config: {
 			usingComponents: {
-				'app-abnor': '../component/abnor'
+				'wui-abnor': '@yapple/wui-abnor'
 			}
 		},
 		properties: {

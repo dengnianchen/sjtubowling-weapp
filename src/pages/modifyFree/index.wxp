@@ -2,7 +2,7 @@
 	<wxc-notice class="notice--fixed" notice="{{notice}}" color="#ff5777" bgColor="#ffe8ee"></wxc-notice>
 	<view class="app-panel">
 		<view class="app-panel_content">
-			<app-list wx:for="{{suser.timetable}}" wx:key="name"
+			<wui-list wx:for="{{suser.timetable}}" wx:key="name"
 			          wx:for-index="name" wx:for-item="selected"
 			          id="{{name}}" title="{{name}}"
 			          desc="{{weekdays[classConfig[name].weekday-1]}}{{classConfig[name].time}}"
@@ -11,7 +11,7 @@
 			          mode="{{index === suser.timetable.length-1 ? 'none': ''}}"
 			          arrow="{{false}}"
 			          bind:click="onItemClicked"
-			          customStyle="{{selected?'background: linear-gradient(to right, #FFF 50%, #BFFFC9)':''}}"></app-list>
+			          customStyle="{{selected?'background: linear-gradient(to right, #FFF 50%, #BFFFC9)':''}}"></wui-list>
 		</view>
 	</view>
 	<view class="large-btn-wrapper">
@@ -32,7 +32,7 @@
 		config: {
 			navigationBarTitleText: '修改空余时间',
 			usingComponents: {
-				'app-list': '../../common/component/list',
+				'wui-list': '@yapple/wui-list',
 				'wxc-button': '@minui/wxc-button',
 				'wxc-notice': '@minui/wxc-notice'
 			},
@@ -44,7 +44,7 @@
 		
 		async onLoad() {
 			if (this.data.suser.active)
-				this.setData({ notice: `请至少勾选${this.data.global.config.timetable_min_selected}个空余时间。` });
+				this.setData({ notice: `请至少勾选${this.data.$.config.timetable_min_selected}个空余时间。` });
 			else
 				this.setData({ notice: "您已离职，无法修改空余时间。" });
 			let data = await $.Http.request('/common/class_config');
@@ -66,16 +66,16 @@
 			if (!this.data.suser.active)
 				return;
 			let selectedCount = this.data.suser.numOfFreeTimeSelected();
-			const minCount = this.data.global.config.timetable_min_selected;
+			const minCount = this.data.$.config.timetable_min_selected;
 			if (selectedCount < minCount) {
-				util.showModel('保存失败', `需要至少勾选${minCount}个空余时间`);
+				$.Modal.show('保存失败', `需要至少勾选${minCount}个空余时间`);
 				return;
 			}
-			util.showBusy("保存中……");
+			$.Modal.showBusy("保存中……");
 			try {
 				let user = await $.Http.submit(e, 'POST /user/timetable',
 					this.data.suser.timetable);
-				util.showSuccess("保存成功！");
+				$.Modal.showSuccess("保存成功！");
 				User.current = user;
 				setTimeout(() => {
 					if (getApp().globalData.work)
@@ -84,7 +84,7 @@
 						wx.navigateBack();
 				}, 1000);
 			} catch (ex) {
-				util.showError('保存失败', ex);
+				$.Modal.showError('保存失败', ex);
 			}
 		}
 		

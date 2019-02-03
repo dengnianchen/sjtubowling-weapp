@@ -56,7 +56,7 @@
 						else
 							messages += `${node.data.label}：${message}\n`;
 					}
-					util.showModel('表单填写错误', messages);
+					$.Modal.show('表单填写错误', messages);
 					return;
 				}
 				

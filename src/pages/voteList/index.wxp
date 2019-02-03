@@ -1,6 +1,6 @@
 <template>
 	<view class="app-panel">
-		<app-list wx:for="{{votes}}" wx:key="id" wx:for-item="vote"
+		<wui-list wx:for="{{votes}}" wx:key="id" wx:for-item="vote"
 		          wx:if="{{vote.status&&!vote.expired}}"
 		          id="vote-{{vote.id}}"
 		          mode="{{index === votes.length-1 ? 'none': ''}}"
@@ -10,10 +10,10 @@
 				<text decode="{{true}}">{{vote.name}}</text>
 				<app-votelabels class="vote__label"
 				                item="{{vote}}"
-				                _style="{{global.style}}"
+				                _style="{{$.style}}"
 				></app-votelabels>
 			</view>
-		</app-list>
+		</wui-list>
 	</view>
 	<view class="votelist__tip">列表中仅显示目前开放的投票</view>
 </template>
@@ -28,7 +28,7 @@
 		config: {
 			navigationBarTitleText: '投票列表',
 			usingComponents: {
-				'app-list': '../../common/component/list',
+				'wui-list': '@yapple/wui-list',
 				'app-votelabels': '../../common/component/votelabels'
 			},
 		},

@@ -190,7 +190,7 @@
 		
 		async onSubmit(e) {
 			console.log(e);
-			util.showBusy('保存中……');
+			$.Modal.showBusy('保存中……');
 			
 			// 若没有进行任何修改则直接跳转到成功页面
 			if ($(e.detail.changedParams).isEmpty())
@@ -202,13 +202,13 @@
 					e.detail.changedParams);
 				return this.onSubmitSuccess();
 			} catch (ex) {
-				util.showError('保存失败', ex);
+				$.Modal.showError('保存失败', ex);
 				console.log('保存失败', ex);
 			}
 		},
 		
 		onSubmitSuccess() {
-			util.showSuccess('保存成功！');
+			$.Modal.showSuccess('保存成功！');
 			setTimeout(() => {
 				if (getApp().globalData.work)
 					getApp().globalData.work.next();

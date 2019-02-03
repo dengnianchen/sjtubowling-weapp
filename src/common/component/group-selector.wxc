@@ -27,7 +27,7 @@
 				value: 0,
 				observer(value) {
 					this.setData({
-						totalHeight: util.getScreenSize("rpx").y - value
+						totalHeight: $.Sys.screenSizeRpx.y - value
 					});
 					this.updateItemHeight();
 				}
@@ -49,7 +49,7 @@
 			}
 		},
 		data: {
-			totalHeight: util.getScreenSize("rpx").y,
+			totalHeight: $.Sys.screenSizeRpx.y,
 			itemHeight: 40,
 			itemMaxHeight: 40,
 			fontSize: 24
@@ -68,7 +68,7 @@
 			onGroupBarTouch(e) {
 				if (!this.data.items || !this.data.items.length)
 					return;
-				const y = util.px2rpx(e.touches[0].pageY) - this.data.top;
+				const y = $.Sys.px2rpx(e.touches[0].pageY) - this.data.top;
 				const h = this.data.itemHeight;
 				let index = Math.floor(y / h);
 				if (index < 0)

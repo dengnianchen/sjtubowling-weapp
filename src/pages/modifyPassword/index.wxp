@@ -22,6 +22,7 @@
 
 <script>
 	
+	const md5 = require('md5');
 	const util = require('../../utils/index');
 	
 	let page = null;
@@ -62,17 +63,17 @@
 		
 		async onSubmit(e) {
 			console.log(e);
-			util.showBusy('保存中……');
-			const passwordToSubmit = util.md5(e.detail.params.password);
+			$.Modal.showBusy('保存中……');
+			const passwordToSubmit = md5(e.detail.params.password);
 			
 			try {
 				await $.Http.submit(e, 'POST /user/password', {
 					password: passwordToSubmit
 				});
-				util.showSuccess('保存成功！');
+				$.Modal.showSuccess('保存成功！');
 				setTimeout(() => wx.navigateBack(), 1000);
 			} catch(ex) {
-				util.showError('保存失败', ex);
+				$.Modal.showError('保存失败', ex);
 				console.log('保存失败', ex);
 			}
 		}

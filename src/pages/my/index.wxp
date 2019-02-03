@@ -2,23 +2,24 @@
 	<form bindsubmit="gotoUserPage" report-submit="{{true}}">
 		<button class="fake-button my-head" form-type="submit"
 		        style="background:{{themeColor[suser.info.gender]}}">
-			<wxc-avatar class="my-head__avatar" src="{{suser.info.photo}}"></wxc-avatar>
+			<wxc-avatar class="my-head__avatar" src="{{suser.info.thumbnail}}"></wxc-avatar>
 			<view class="my-head__name">{{suser.name}}</view>
 			<wxc-icon class="my-head__arrow" type="arrow-right" size="30" color="#FFF"></wxc-icon>
 		</button>
 	</form>
 	<view class="app-panel" wx:for="{{menuGroup}}" wx:key="mindex"
 	      wx:for-index="mindex" wx:for-item="menu">
-		<app-list wx:for="{{menu}}" wx:key="index"
+		<wui-list wx:for="{{menu}}" wx:key="index"
 		          id="menuitem-{{mindex}}-{{index}}" title="{{item.title}}"
 		          desc="{{item.desc}}" icon="{{item.icon}}"
 		          mode="{{index === menu.length-1 ? 'none': ''}}"
 		          arrow="{{false}}"
-		          bind:click="onMenuItemClick"></app-list>
+		          bind:click="onMenuItemClick"></wui-list>
 	</view>
 </template>
 
 <script>
+	const User = require('../../models/user');
 	const util = require('../../utils/index');
 	
 	export default {
@@ -29,7 +30,7 @@
 			navigationBarBackgroundColor: '#666',
 			navigationBarTextStyle: 'white',
 			usingComponents: {
-				"app-list": "../../common/component/list",
+				"wui-list": "@yapple/wui-list",
 				"wxc-icon": "@minui/wxc-icon",
 				"wxc-avatar": "@minui/wxc-avatar",
 			},

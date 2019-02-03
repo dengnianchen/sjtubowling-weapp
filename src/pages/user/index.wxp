@@ -3,14 +3,14 @@
 	<view class="userinfo__fixedhead" bindtap='showFullAvatar'
 	      wx:if="{{scroll>=750-minHeight}}">
 		<view class="userinfo__fixedhead--avatar"
-		      style="background-image:url({{user.info.photo}})"></view>
+		      style="background-image:url({{user.info.thumbnail}})"></view>
 		<view class="userinfo__fixedhead--title">
 			<text>{{user.name}}</text>
-			<app-icon wx:if="{{user.info.gender===1}}" name="fas fa-mars"
-			          size="0.7em" color="#9DE1FC"></app-icon>
-			<app-icon wx:if="{{user.info.gender===2}}" name="fas fa-venus"
-			          size="0.7em" color="#F89EF8"></app-icon>
-			<app-rolelabels item="{{user}}" colors="{{global.style.labelColor}}"></app-rolelabels>
+			<wui-icon wx:if="{{user.info.gender===1}}" name="fas fa-mars"
+			          size="0.7em" color="#9DE1FC"></wui-icon>
+			<wui-icon wx:if="{{user.info.gender===2}}" name="fas fa-venus"
+			          size="0.7em" color="#F89EF8"></wui-icon>
+			<app-rolelabels item="{{user}}" colors="{{$.style.labelColor}}"></app-rolelabels>
 		</view>
 	</view>
 	<view wx:if="{{scroll<750-minHeight}}" class="userinfo__avatar"
@@ -18,7 +18,7 @@
 		<view style="background: white">
 			<app-cc src="../../images/loading.gif" size="120" color="#999999"></app-cc>
 		</view>
-		<view wx:if="{{!user.info.photo_clip}}" style="background-image:url({{user.info.photo}})"></view>
+		<view wx:if="{{!user.info.photo_clip}}" style="background-image:url({{user.info.thumbnail}})"></view>
 		<view wx:else style="background-image:url({{user.info.fullPhoto}});background-size:{{1200*750/user.info.photo_clip.width}}rpx;background-position:{{-user.info.photo_clip.x*750/user.info.photo_clip.width}}rpx {{-user.info.photo_clip.y*750/user.info.photo_clip.width}}rpx"></view>
 	</view>
 	<view class="userinfo__head" bindtap='showFullAvatar'
@@ -26,15 +26,15 @@
 		<view class="userinfo__head--content"
 		      style="padding-bottom:{{scroll>750-heightThres?0:'20'}}rpx"
 		      wx:if="{{scroll<750-minHeight}}">
-			<app-rolelabels wx:if="{{scroll<=750-heightThres}}" item="{{user}}" colors="{{global.style.labelColor}}"></app-rolelabels>
+			<app-rolelabels wx:if="{{scroll<=750-heightThres}}" item="{{user}}" colors="{{$.style.labelColor}}"></app-rolelabels>
 			<view class="userinfo__title"
 			      style="font-size:{{util.max(90-scroll/(750-heightThres)*40,50)}}rpx">
 				<text style="white-space:{{scroll>750-heightThres?'nowrap':'normal'}}">{{user.name}}</text>
-				<app-icon wx:if="{{user.info.gender===1}}" name="fas fa-mars"
-				          size="0.7em" color="#9DE1FC"></app-icon>
-				<app-icon wx:if="{{user.info.gender===2}}" name="fas fa-venus"
-				          size="0.7em" color="#F89EF8"></app-icon>
-				<app-rolelabels wx:if="{{scroll>750-heightThres}}" item="{{user}}" colors="{{global.style.labelColor}}"></app-rolelabels>
+				<wui-icon wx:if="{{user.info.gender===1}}" name="fas fa-mars"
+				          size="0.7em" color="#9DE1FC"></wui-icon>
+				<wui-icon wx:if="{{user.info.gender===2}}" name="fas fa-venus"
+				          size="0.7em" color="#F89EF8"></wui-icon>
+				<app-rolelabels wx:if="{{scroll>750-heightThres}}" item="{{user}}" colors="{{$.style.labelColor}}"></app-rolelabels>
 			</view>
 		</view>
 	</view>
@@ -96,7 +96,7 @@
 		<view class="app-panel margin-bottom">
 			<view class="app-panel__title">空余时间</view>
 			<view class="app-panel__content">
-				<app-abnor wx:if="{{user.active!==1}}" error="ERR_USER_LEAVE"></app-abnor>
+				<wui-abnor wx:if="{{user.active!==1}}" error="USER_LEAVE"></wui-abnor>
 				<view wx:else class="table">
 					<view class="thead">
 						<view class="th"></view>
@@ -129,8 +129,8 @@
 			enablePullDownRefresh: true,
 			usingComponents: {
 				'app-rolelabels': '../../common/component/rolelabels',
-				'app-icon': '../../common/component/icon',
-				'app-abnor': '../../common/component/abnor',
+				'wui-icon': '@yapple/wui-icon',
+				'wui-abnor': '@yapple/wui-abnor',
 				'app-cc': '../../common/component/cc',
 				'app-bmenu': '../../common/component/bmenu'
 			}
@@ -152,7 +152,7 @@
 					icon: "fas fa-phone",
 					action() {
 						if (!this.data.user.info.tel) {
-							util.showModel("拨打电话", "该员工未填写手机号码");
+							$.Modal.show("拨打电话", "该员工未填写手机号码");
 							return;
 						}
 						wx.makePhoneCall({
@@ -164,7 +164,7 @@
 					text: "发送私信",
 					icon: "fas fa-comment",
 					action() {
-						util.showModel("发送私信", "功能尚未实现");
+						$.Modal.show("发送私信", "功能尚未实现");
 					}
 				},*/
 				{
@@ -218,7 +218,7 @@
 			}
 			this.isRendering = true;
 			this.scrollTo = undefined;
-			this.setData({ scroll: util.px2rpx(e.scrollTop) }, () => {
+			this.setData({ scroll: $.Sys.px2rpx(e.scrollTop) }, () => {
 				this.isRendering = false;
 				if (this.scrollTo !== undefined)
 					this.onPageScroll(this.scrollTo);

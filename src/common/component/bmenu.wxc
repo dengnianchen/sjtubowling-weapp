@@ -6,12 +6,12 @@
 				<button wx:if="{{item.type==='share'}}" id="bmenu-{{index}}"
 				        class="fake-button bmenu__item"
 				        open-type="share">
-					<app-icon class="bmenu__item--icon" color="{{iconColor}}" name="{{item.icon}}"></app-icon>
+					<wui-icon class="bmenu__item--icon" color="{{iconColor}}" name="{{item.icon}}"></wui-icon>
 					<view class="bmenu__item--text">{{item.text}}</view>
 				</button>
 				<form wx:else id="bmenu-{{index}}" bindsubmit="onItemClicked" report-submit="{{true}}">
 					<button class="fake-button bmenu__item" form-type="submit">
-						<app-icon class="bmenu__item--icon" color="{{iconColor}}" name="{{item.icon}}"></app-icon>
+						<wui-icon class="bmenu__item--icon" color="{{iconColor}}" name="{{item.icon}}"></wui-icon>
 						<view class="bmenu__item--text">{{item.text}}</view>
 					</button>
 				</form>
@@ -24,7 +24,7 @@
 	export default {
 		config: {
 			usingComponents: {
-				'app-icon': './icon'
+				'wui-icon': '@yapple/wui-icon'
 			}
 		},
 		behaviors: [ ],

@@ -20,9 +20,9 @@
 					try {
 						let data = await $.Http.upload(e, '/ocr/test',
 							res.tempFilePaths[0], 'attachment');
-						util.showModel('识别成功', data);
+						$.Modal.show('识别成功', data);
 					} catch(ex) {
-						util.showError('识别失败', ex);
+						$.Modal.showError('识别失败', ex);
 					};
 				}
 			})

@@ -27,6 +27,31 @@ const config = {
 	storageUrl: storageUrl,
 	defaultAvatar: `${publicUrl}/img/default_avatar.png`,
 	avatarUrl: `${storageUrl}/avatar/`,
+	
+	// Welib配置
+	welib: {
+		host: host + "/weapp",
+		wui: {
+			abnor: {
+				'USER_LEAVE': {
+					image: ''
+				},
+				'YOU_LEAVE': {
+					image: ''
+				},
+				'NO_NEWEST_POST': {
+					image: ''
+				},
+				'NO_SCHEDULE_THIS_WEEK': {
+					image: ''
+				},
+				'VOTE_NOT_VISIBLE': {
+					image: 'default',
+					button: null
+				}
+			}
+		}
+	}
 };
 
 module.exports = config;

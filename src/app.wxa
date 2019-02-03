@@ -7,10 +7,9 @@
 </template>
 
 <script>
-	//require ('@mindev/min-async-function');
 	require ('welib');
+	require ('./error');
 	const style = require('./style');
-	const util = require('./utils/index');
 	const config = require('./config');
 	const User = require('./models/user');
 	
@@ -70,7 +69,7 @@
 				
 				// 1. 若当前不存在全局配置信息，则先加载之
 				//    全局配置信息存在app对象中，因此仅在小程序运行后的第一个页面加载时需要从服务器获取
-				if (!util.getConfig())
+				if ($($.App.config).isEmpty())
 					$.App.config = await $.Http.request("/common/config");
 				
 				// 2. 尝试获取当前登陆用户
@@ -88,8 +87,8 @@
 					user = User.current;
 					if (!user)
 						return redirectToBind();
-					this.setData({ suser: user });
 				}
+				this.setData({ suser: user });
 				
 				// 4. 检查当前登陆用户的用户信息是否已完善，若未完善则跳转到新用户指导页面
 				//    前提条件：当前用户存在，且不在用户信息完善的过程中
@@ -103,10 +102,7 @@
 			};
 			
 			// 初始化Welib库
-			$.initial({
-				host: config.service.host + "/weapp",
-				pageBeforeLoad: pageLoading
-			});
+			$.initial($.extend(config.welib, { pageBeforeLoad: pageLoading }));
 		},
 		onShow() {
 		},

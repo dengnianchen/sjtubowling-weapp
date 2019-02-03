@@ -4,7 +4,7 @@
 			<text class="vote_title" decode="{{true}}">{{vote.name}}</text>
 			<app-votelabels class="vote__label"
 			                item="{{vote}}"
-			                _style="{{global.style}}"
+			                _style="{{$.style}}"
 			></app-votelabels>
 		</view>
 		<view wx:if="{{vote.deadline}}" class="page__desc">投票截止时间：{{vote.deadline}}</view>
@@ -34,7 +34,6 @@
 <script>
 	const util = require('../../utils/index');
 	const config = require('../../config');
-	const error = require('../../error');
 	const he = require('he');
 	
 	export default {
@@ -57,11 +56,11 @@
 			
 			// Check permission
 			if (!this.data.suser.active && !vote.oldstaff_visible)
-				throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅在职员工可见！");
+				throw $.Err.VOTE_NOT_VISIBLE("该投票仅在职员工可见！");
 			if (this.data.suser.position === 0 && !vote.staff_visible)
-				throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅经理可见！");
+				throw $.Err.VOTE_NOT_VISIBLE("该投票仅经理可见！");
 			if (this.data.suser.position !== 0 && !vote.manager_visible)
-				throw new error.CommonError ("ERR_VOTE_NOT_VISIBLE", "该投票仅员工可见！");
+				throw $.Err.VOTE_NOT_VISIBLE("该投票仅员工可见！");
 			
 			// Reorganize items as key-value structure
 			let items = {};
@@ -105,11 +104,11 @@
 					countOfSelected++;
 			});
 			if (!countOfSelected) {
-				util.showModel("投票提交失败", "至少选择一个投票项");
+				$.Modal.show("投票提交失败", "至少选择一个投票项");
 				return;
 			}
 			if (countOfSelected > this.data.vote.maxSelect) {
-				util.showModel("投票提交失败", `最多选择${this.data.vote.maxSelect}个投票项`);
+				$.Modal.show("投票提交失败", `最多选择${this.data.vote.maxSelect}个投票项`);
 				return;
 			}
 			
@@ -128,7 +127,7 @@
 			} catch (ex) {
 				// If the vote is already submitted,
 				// just refresh page (as success callback do)
-				if (ex.type === error.ERR_DUPLICATE_SUBMIT) {
+				if (ex.is($.Err.DUPLICATE_SUBMIT)) {
 					this.setData({
 						vote: null,
 						saveInProgress: false,
@@ -137,7 +136,7 @@
 					this.onLoad({ id: voteId });
 					return;
 				}
-				util.showError("投票提交失败", ex);
+				$.Modal.showError("投票提交失败", ex);
 				this.setData ({ saveInProgress: false });
 			}
 		}

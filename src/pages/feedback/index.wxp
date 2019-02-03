@@ -51,7 +51,7 @@
 					url: '../success/index?desc=建议反馈已提交，感谢您对开发组的支持！',
 				});
 			} catch (ex) {
-				util.showError('提交失败', ex);
+				$.Modal.showError('提交失败', ex);
 				console.log('提交失败', ex);
 				this.setData({ submitInProcess: false });
 			}

@@ -2,10 +2,10 @@
 	<view>
 		<block wx:for="{{steps}}" wx:key="index">
 			<view class="step">
-				<app-icon wx:if="{{item.done}}" class="step__icon"
-				          name="fas fa-check-circle" color="{{style.successColor}}"></app-icon>
-				<app-icon wx:else class="step__icon"
-				          name="far fa-circle" color="{{style.darkPromptColor}}"></app-icon>
+				<wui-icon wx:if="{{item.done}}" class="step__icon"
+				          name="fas fa-check-circle" color="{{style.successColor}}"></wui-icon>
+				<wui-icon wx:else class="step__icon"
+				          name="far fa-circle" color="{{style.darkPromptColor}}"></wui-icon>
 				<view class="step__content">
 					<view wx:if="{{item.title}}"
 					      class="step__title {{!item.done?'step__title--todo':''}}"
@@ -23,7 +23,7 @@
 	export default {
 		config: {
 			usingComponents: {
-				'app-icon': './icon'
+				'wui-icon': '@yapple/wui-icon'
 			}
 		},
 		behaviors: [],

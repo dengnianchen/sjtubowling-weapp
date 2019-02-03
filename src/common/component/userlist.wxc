@@ -1,7 +1,7 @@
 <template>
 	<form bindsubmit="gotoUserPage" report-submit="{{true}}">
 		<button class="fake-button list" data-uid="{{item.uid}}" form-type="submit">
-			<wxc-avatar class="list__avatar" mold="square" src="{{item.photo}}">
+			<wxc-avatar class="list__avatar" mold="square" src="{{item.thumbnail}}">
 			</wxc-avatar>
 			<view class="list__body list__{{mode}}">
 				<view class="list__title">
@@ -22,7 +22,6 @@
 
 <script>
 	const enums = require('../../utils/enums');
-	const util = require('../../utils/index');
 	
 	export default {
 		config: {

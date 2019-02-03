@@ -19,6 +19,7 @@
 
 <script>
 	const qcloud = require('wafer2-client-sdk');
+	const md5 = require('md5');
 	const config = require('../../config');
 	const util = require('../../utils/index');
 	
@@ -100,7 +101,7 @@
 						this.doBind();
 					},
 					fail: err => { // 登录失败
-						util.showError('登录错误', err);
+						$.Modal.showError('登录错误', err);
 						this.setData({bindInProcess: false});
 					}
 				})
@@ -116,12 +117,12 @@
 			let params = this.data.bindForm;
 			if (params.name === undefined || params.name === ""
 				|| params.password === undefined || params.password === "") {
-				util.showError('绑定失败', "用户名或密码不能为空");
+				$.Modal.showError('绑定失败', "用户名或密码不能为空");
 				this.setData({bindInProcess: false});
 				return;
 			}
 			// 对密码字段进行加密
-			params.password = util.md5(params.password);
+			params.password = md5(params.password);
 			
 			// 提交绑定请求
 			qcloud.request({
@@ -133,7 +134,7 @@
 					'content-type': 'application/x-www-form-urlencoded'
 				},
 				success: result => { //绑定成功
-					util.showSuccess('绑定成功！');
+					$.Modal.showSuccess('绑定成功！');
 					// 设置session.user并跳转回原页面
 					let session = qcloud.Session.get();
 					session.user = result.data.data;
@@ -141,7 +142,7 @@
 					this.redirectBack();
 				},
 				fail: ex => { // 绑定失败
-					util.showError('绑定失败', ex);
+					$.Modal.showError('绑定失败', ex);
 					this.setData({bindInProcess: false});
 				}
 			})

@@ -2,7 +2,7 @@
 	"miniprogramRoot": "dist/",
 	"description": "项目配置文件。",
 	"compileType": "miniprogram",
-	"libVersion": "2.3.0",
+	"libVersion": "2.5.2",
 	"appid": "wx94170a99fa2b88cc",
 	"projectname": "sjtubowling-min",
 	"setting": {
@@ -10,7 +10,8 @@
 		"es6": false,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"autoAudits": false
 	},
 	"condition": {
 		"search": {

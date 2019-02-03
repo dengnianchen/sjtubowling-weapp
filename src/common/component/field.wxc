@@ -156,7 +156,7 @@
 				let msg = this._validate(value);
 				if (msg) {
 					this.setData({ _error: true });
-					util.showModel("表单填写错误", `${this.data.label}：${msg}`);
+					$.Modal.show("表单填写错误", `${this.data.label}：${msg}`);
 					return;
 				}
 				this.setData({ value: value });

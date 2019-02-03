@@ -3,7 +3,7 @@
 		<view class="page__topbar" style="height:{{topbarHeight}}rpx">
 			<button class="fake-button topbar__item" form-type="submit"
 			        data-action='selectSortType'>
-				<app-icon name="fas fa-sort-amount-up"></app-icon>
+				<wui-icon name="fas fa-sort-amount-up"></wui-icon>
 				{{sortTypes[curSortType].desc}}
 			</button>
 			<button class="fake-button topbar__item" form-type="submit"
@@ -13,7 +13,7 @@
 			<!--<view class="topbar__item topbar__item-goto">
 				<picker bindchange="fastGoto" items="{{groupedList}}"
 				        items-key="key" value="{{scrollToIndex}}">
-					<app-icon name="fas fa-bars"></app-icon>
+					<wui-icon name="fas fa-bars"></wui-icon>
 				</picker>
 			</view>-->
 		</view>
@@ -26,7 +26,7 @@
 			<view class="app-panel__content">
 				<app-userlist item="{{item}}"
 				              mode="{{index === group.value.length-1 ? 'none': ''}}"
-				              roleColors="{{global.style.labelColor}}"
+				              roleColors="{{$.style.labelColor}}"
 				              wx:for="{{group.value}}" wx:key="uid">
 				</app-userlist>
 			</view>
@@ -37,9 +37,9 @@
 </template>
 
 <script>
-	const util = require('../../utils/index.js');
 	const enums = require('../../utils/enums.js');
 	const pinyin = require('../../vendor/pinyin/pinyinUtil.js');
+	const User = require('../../models/user');
 	
 	export default {
 		auth: true,
@@ -49,7 +49,7 @@
 			navigationBarTextStyle: 'white',
 			navigationBarTitleText: '全家福 - 在职员工',
 			usingComponents: {
-				'app-icon': '../../common/component/icon',
+				'wui-icon': '@yapple/wui-icon',
 				'app-userlist': '../../common/component/userlist',
 				'app-group-selector': '../../common/component/group-selector'
 			},
@@ -122,8 +122,8 @@
 		
 		onGroupBarTouch(e) {
 			const y = e.touches[0].pageY;
-			const top = util.rpx2px(this.data.topbarHeight);
-			const height = util.rpx2px(this.data.groupBarItemHeight);
+			const top = $.Sys.rpx2px(this.data.topbarHeight);
+			const height = $.Sys.rpx2px(this.data.groupBarItemHeight);
 			let index = Math.floor((y - top) / height);
 			if (index < 0)
 				index = 0;
@@ -160,16 +160,16 @@
 				backgroundColor: isActive ? '#00aeef' : '#898989',
 			});
 			try {
-				util.showBusy('正在加载');
+				$.Modal.showBusy('正在加载');
 				let userList = await $.Http.request(`/user/${isActive ? 'working' : 'leaving'}`);
 				let users = [];
 				for (let rawUserData of userList)
 					users.push(new User(rawUserData));
 				this.setData({ list: users });
 				this.setSortType(0);
-				util.showSuccess('加载成功');
+				$.Modal.showSuccess('加载成功');
 			} catch(ex) {
-				util.showError('加载失败', ex);
+				$.Modal.showError('加载失败', ex);
 			}
 		},
 		

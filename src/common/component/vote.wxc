@@ -9,7 +9,7 @@
 			<view wx:if="{{item.type==='option'||!result}}" class="vote__item vote__item--{{item.type}}">
 				<view class="vote__bgmask" style="left:{{result?result[item.item_id]:0}}%"></view>
 				<view class="vote__pic">
-					<app-icon wx:if="{{item.picture}}" name="fas fa-image"></app-icon>
+					<wui-icon wx:if="{{item.picture}}" name="fas fa-image"></wui-icon>
 				</view>
 				<view class="vote__text" bindtap="onPictureIconClicked" data-pic="{{item.picture}}">
 					{{item.text}}
@@ -39,7 +39,7 @@
 	export default {
 		config: {
 			usingComponents: {
-				"app-icon": "./icon"
+				"wui-icon": "@yapple/wui-icon"
 			}
 		},
 		behaviors: [],
@@ -84,7 +84,7 @@
 					this.setData({ checked: e.detail.value });
 					this._sendChangeEvent();
 				} else {
-					util.showModel("选择项过多",
+					$.Modal.show("选择项过多",
 						`选择项不得多于${this.data.maxSelect}个`);
 					let [ ...checked ] = this.data.checked;
 					this.setData({ checked: checked });

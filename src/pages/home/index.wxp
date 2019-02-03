@@ -4,20 +4,20 @@
 			<view class="home-banner__now">现在是{{term.name}}第{{week}}周</view>
 		</view>
 		<view class="app-panel margin-bottom" style="border-top:none;">
-			<app-list wx:for="{{topMenu}}" wx:key="index"
+			<wui-list wx:for="{{topMenu}}" wx:key="index"
 			          id="topmenu-{{index}}" title="{{item.title}}"
 			          desc="{{item.desc}}" icon="{{item.icon}}"
 			          dot="{{item.dot}}"
 			          mode="{{index===topMenu.length-1?'none':''}}"
 			          bind:click="onTopMenuItemClick"
-			></app-list>
+			></wui-list>
 		</view>
 		<view class="app-panel margin-bottom">
 			<view class="app-panel__title">最新例会记录{{post?' - ':''}}{{post.title}}</view>
 			<view wx:if="{{post}}" class="app-panel__content post-content">
 				<text>{{post.content}}</text>
 			</view>
-			<app-abnor wx:else error="ERR_NO_NEWEST_POST"></app-abnor>
+			<wui-abnor wx:else error="NO_NEWEST_POST"></wui-abnor>
 		</view>
 		<view class="app-panel margin-bottom">
 			<view class="app-panel__title">排班表 - 第{{week}}周</view>
@@ -42,7 +42,7 @@
 					</view>
 				</view>
 			</view>
-			<app-abnor wx:else error="ERR_NO_SCHEDULE_THIS_WEEK"></app-abnor>
+			<wui-abnor wx:else error="NO_SCHEDULE_THIS_WEEK"></wui-abnor>
 		</view>
 	</view>
 </template>
@@ -56,8 +56,8 @@
 		
 		config: {
 			usingComponents: {
-				'app-abnor': '../../common/component/abnor',
-				'app-list': '../../common/component/list'
+				'wui-abnor': '@yapple/wui-abnor',
+				'wui-list': '@yapple/wui-list'
 			},
 			"navigationBarBackgroundColor": "#002A54",
 			"navigationBarTextStyle": "white",
@@ -111,15 +111,21 @@
 		 * 生命周期函数--监听页面加载
 		 */
 		async onLoad() {
-			await this.loadPageContent();
+			// 获取当前学期信息
+			let term = await $.Http.request('/common/term');
+			this.setData({
+				term: term,
+				week: util.getWeekNumber(term.begin_date)
+			});
 		},
 		
 		async onShow() {
-			util.showBusy("加载中…");
+			$.Modal.showBusy("加载中…");
 			await this.loadPageContent();
-			util.hideToast();
+			$.Modal.hideToast();
 		},
 		
+		/*
 		async onPullDownRefresh() {
 			if (this.data.loading || this.data.loadingError)
 				return;
@@ -131,14 +137,9 @@
 				wx.stopPullDownRefresh();
 			}
 		},
+		*/
 		
 		async loadPageContent() {
-			// 获取当前学期信息
-			let term = await $.Http.request('/common/term');
-			this.setData({
-				term: term,
-				week: util.getWeekNumber(term.begin_date)
-			});
 			
 			// 获取投票简要信息
 			try {

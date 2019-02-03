@@ -55,10 +55,10 @@
 		},
 		
 		onLoad() {
-			const canvasWidth = util.getScreenSize('px').x;
-			const canvasHeight = util.getScreenSize('px').y - util.rpx2px(100);
-			const cutWidth = util.rpx2px(600);
-			const cutHeight = util.rpx2px(600);
+			const canvasWidth = $.Sys.screenSizePx.x;
+			const canvasHeight = $.Sys.screenSizePx.y - $.Sys.rpx2px(100);
+			const cutWidth = $.Sys.rpx2px(600);
+			const cutHeight = $.Sys.rpx2px(600);
 			const cropper = {
 				id: 'cropper',
 				width: canvasWidth,
@@ -79,7 +79,7 @@
 				console.log(`wecropper is ready for work!`);
 			}).on('imageLoad', ctx => {
 				this.setData({ loadingPicture: false });
-				util.showSuccess('加载完成！');
+				$.Modal.showSuccess('加载完成！');
 			}).updateCanvas();
 			
 			//初始化CanvasForScale
@@ -111,10 +111,10 @@
 		uploadAvatar(e) {
 			this.wecropper.getCropperRegion(async region => {
 				try {
-					util.showBusy('上传中……');
+					$.Modal.showBusy('上传中……');
 					let user = await $.Http.upload(e, '/user/avatar',
 						this.data.cropper.src, 'attachment', region);
-					util.showSuccess('上传成功！');
+					$.Modal.showSuccess('上传成功！');
 					User.current = user;
 					setTimeout(() => {
 						if (getApp().globalData.work)
@@ -123,7 +123,7 @@
 							wx.navigateBack();
 					}, 1000);
 				} catch (ex) {
-					util.showError('上传失败', ex);
+					$.Modal.showError('上传失败', ex);
 				}
 			});
 		},
@@ -133,7 +133,7 @@
 			wx.chooseImage({
 				count: 1,
 				success: res => {
-					util.showBusy('加载中……');
+					$.Modal.showBusy('加载中……');
 					this.setData({ loadingPicture: true });
 					const imageFile = res.tempFilePaths[0];
 					wx.getImageInfo({

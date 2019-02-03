@@ -1,11 +1,11 @@
 <template xmlns:wx="http://www.w3.org/1999/XSL/Transform">
 	<view class="app-panel">
 		<view class="app-panel_content">
-			<app-list wx:for="{{menu}}" wx:key="index"
+			<wui-list wx:for="{{menu}}" wx:key="index"
 			          id="menuitem-{{index}}" title="{{item.title}}"
 			          desc="{{item.desc}}" icon="{{item.icon}}"
 			          mode="{{index === menu.length-1 ? 'none': ''}}"
-			          bind:click="onMenuItemClick"></app-list>
+			          bind:click="onMenuItemClick"></wui-list>
 		</view>
 	</view>
 </template>
@@ -17,7 +17,7 @@
 		config: {
 			navigationBarTitleText: '修改个人信息',
 			usingComponents: {
-				"app-list": "../../common/component/list"
+				"wui-list": "@yapple/wui-list"
 			},
 		},
 		data: {
