@@ -70,17 +70,17 @@
 				if (message && typeof message === 'string') {
 					text = message;
 				}
-				let duration = this.data.duration
+				let duration = this.data.duration;
 				
-				clearTimeout(this._timer)
+				clearTimeout(this._timer);
 				this.setData({
 					text: text,
 					isShow: true
-				})
+				});
 				
 				if (duration > 0 && duration !== Infinity) {
 					this._timer = setTimeout(() => {
-						this.hide()
+						this.hide();
 						this.triggerEvent('success', {}, {})
 					}, duration)
 				}

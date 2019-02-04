@@ -1,0 +1,46 @@
+<template xmlns:wx="http://www.w3.org/1999/xhtml">
+	<view>
+		<wui-cc wx:if="{{loading}}" src="../../images/loading.gif"
+		        text="加载中" size="120" color="#999999"></wui-cc>
+		<wui-abnor wx:elseif="{{error}}" error="{{error}}"></wui-abnor>
+		<slot wx:else></slot>
+	</view>
+</template>
+
+<script>
+	export default {
+		config: {
+			usingComponents: {
+				'wui-abnor': '@yapple/wui-abnor',
+				'wui-cc': './cc',
+			}
+		},
+		behaviors: [],
+		properties: {
+		},
+		data: {
+			loading: false,
+			error: null
+		},
+		lifetimes: {
+			attached() {
+			}
+		},
+		methods: {
+			load() {
+				this.setData({ loading: true });
+				this.triggerEvent('load', { wui: this });
+			},
+			loaded(error = null) {
+				this.setData({
+					loading: false,
+					error: error
+				});
+			}
+		},
+	}
+</script>
+
+<style>
+
+</style>

@@ -16,7 +16,7 @@
 	<view wx:if="{{scroll<750-minHeight}}" class="userinfo__avatar"
 	      style="top:-{{scroll/2}}rpx">
 		<view style="background: white">
-			<app-cc src="../../images/loading.gif" size="120" color="#999999"></app-cc>
+			<wui-cc src="../../images/loading.gif" size="120" color="#999999"></wui-cc>
 		</view>
 		<view wx:if="{{!user.info.photo_clip}}" style="background-image:url({{user.info.thumbnail}})"></view>
 		<view wx:else style="background-image:url({{user.info.fullPhoto}});background-size:{{1200*750/user.info.photo_clip.width}}rpx;background-position:{{-user.info.photo_clip.x*750/user.info.photo_clip.width}}rpx {{-user.info.photo_clip.y*750/user.info.photo_clip.width}}rpx"></view>
@@ -128,11 +128,11 @@
 			navigationBarTitleText: '个人资料',
 			enablePullDownRefresh: true,
 			usingComponents: {
-				'app-rolelabels': '../../common/component/rolelabels',
 				'wui-icon': '@yapple/wui-icon',
 				'wui-abnor': '@yapple/wui-abnor',
-				'app-cc': '../../common/component/cc',
-				'app-bmenu': '../../common/component/bmenu'
+				'wui-cc': '@yapple/wui-cc',
+				'app-bmenu': '../../common/component/bmenu',
+				'app-rolelabels': '../../common/component/rolelabels'
 			}
 		},
 		

@@ -1,8 +1,8 @@
 <template>
 	<view class="app-loading">
 		<view class="app-loading__content">
-			<app-cc src="../../images/loading.gif"
-			        text="加载中" size="120" color="#999999"></app-cc>
+			<wui-cc src="../../images/loading.gif"
+			        text="加载中" size="120" color="#999999"></wui-cc>
 		</view>
 	</view>
 </template>
@@ -11,7 +11,7 @@
 	export default {
 		config: {
 			usingComponents: {
-				'app-cc': '../component/cc',
+				'wui-cc': '@yapple/wui-cc',
 			},
 			
 		},
