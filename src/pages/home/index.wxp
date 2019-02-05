@@ -12,40 +12,32 @@
 			          bind:click="onTopMenuItemClick"
 			></wui-list>
 		</view>
-		<view class="app-panel margin-bottom">
-			<view class="app-panel__title">最新例会记录{{post?' - ':''}}{{post.title}}</view>
-			<wui-content id="content-post">
-				<view class="app-panel__content post-content">
-					<text>{{post.content}}</text>
+		<wui-panel title="最新例会记录{{post?' - ':''}}{{post.title}}"
+		           content-id="content-post">
+			<text>{{post.content}}</text>
+		</wui-panel>
+		<wui-panel title="排班表 - 第{{week}}周"
+		           content-id="content-schedule">
+			<view class="schedule-table__row {{classinfo.myclass?'schedule-table__row-my':''}}"
+			      wx:if="{{schedule}}" wx:for="{{schedule.classes}}"
+			      wx:key="name" wx:for-item="classinfo">
+				<view class="schedule-table__row-1">
+					<text id="class-name">{{classinfo.name}}</text>
+					<text id="class-time">{{classinfo.time}}</text>
+					<text id="class-manager">{{classinfo.manager_name}}</text>
 				</view>
-			</wui-content>
-		</view>
-		<view class="app-panel margin-bottom">
-			<view class="app-panel__title">排班表 - 第{{week}}周</view>
-			<wui-content id="content-schedule">
-				<view class="app-panel__content schedule-table">
-					<view class="schedule-table__row {{classinfo.myclass?'schedule-table__row-my':''}}"
-					      wx:if="{{schedule}}" wx:for="{{schedule.classes}}"
-					      wx:key="name" wx:for-item="classinfo">
-						<view class="schedule-table__row-1">
-							<text id="class-name">{{classinfo.name}}</text>
-							<text id="class-time">{{classinfo.time}}</text>
-							<text id="class-manager">{{classinfo.manager_name}}</text>
-						</view>
-						<view class="schedule-table__row-2">
-							员工：
-							<block wx:for="{{classinfo.staffs}}" wx:key="uid"
-							       wx:for-item="staff">
-								{{index === 0 ? '' : '，'}}{{staff.staff_name}}
-							</block>
-						</view>
-						<view class="schedule-table__row-icon" wx:if="{{classinfo.myclass}}">
-							<view class="fas fa-circle"></view>
-						</view>
-					</view>
+				<view class="schedule-table__row-2">
+					员工：
+					<block wx:for="{{classinfo.staffs}}" wx:key="uid"
+					       wx:for-item="staff">
+						{{index === 0 ? '' : '，'}}{{staff.staff_name}}
+					</block>
 				</view>
-			</wui-content>
-		</view>
+				<view class="schedule-table__row-icon" wx:if="{{classinfo.myclass}}">
+					<view class="fas fa-circle"></view>
+				</view>
+			</view>
+		</wui-panel>
 	</view>
 </template>
 
@@ -60,7 +52,8 @@
 			usingComponents: {
 				'wui-abnor': '@yapple/wui-abnor',
 				'wui-list': '@yapple/wui-list',
-				'wui-content': '@yapple/wui-content'
+				'wui-content': '@yapple/wui-content',
+				'wui-panel': '@yapple/wui-panel'
 			},
 			"navigationBarBackgroundColor": "#002A54",
 			"navigationBarTextStyle": "white",
@@ -114,12 +107,8 @@
 		 * 生命周期函数--监听页面加载
 		 */
 		async onLoad() {
-			let contentSchedule = $.Wui.Content.get('content-schedule');
-			contentSchedule.bindLoad(this.loadSchedule);
-			let contentPost = $.Wui.Content.get('content-post');
-			contentPost.bindLoad(this.loadPost);
-			contentSchedule.load();
-			contentPost.load();
+			$.Wui.content('content-schedule').bindLoad(this.loadSchedule);
+			$.Wui.content('content-post').bindLoad(this.loadPost);
 			// 获取当前学期信息
 			let term = await $.Http.request('/common/term');
 			this.setData({
@@ -150,8 +139,8 @@
 			}
 			
 			// 获取最新的例会记录和班表
-			this.selectComponent("#content-schedule").load();
-			this.selectComponent("#content-post").load();
+			$.Wui.content('content-schedule').load();
+			$.Wui.content('content-post').load();
 		},
 		
 		markMyClass(schedule) {
@@ -182,31 +171,22 @@
 				action.call(this);
 		},
 		
-		async loadSchedule(e) {
-			try {
-				let schedule = await $.Http.request(`/schedule/public/${this.data.week}`);
-				if (!schedule)
-					throw $.Err.NO_SCHEDULE_THIS_WEEK();
-				this.sortSchedule(schedule);
-				this.markMyClass(schedule);
-				this.setData({ schedule: schedule });
-				e.detail.wui.loaded();
-			} catch (ex) {
-				e.detail.wui.loaded(ex);
-			}
+		async loadSchedule(wui) {
+			let schedule = await $.Http.request(`/schedule/public/${this.data.week}`);
+			if (!schedule)
+				throw $.Err.NO_SCHEDULE_THIS_WEEK();
+			this.sortSchedule(schedule);
+			this.markMyClass(schedule);
+			this.setData({ schedule });
 		},
 		
-		async loadPost(e) {
-			try {
-				let post = await $.Http.request('/post/normal');
-				if (!post)
-					throw $.Err.NO_NEWEST_POST();
-				this.setData({ post: post });
-				e.detail.wui.loaded();
-			} catch (ex) {
-				e.detail.wui.loaded(ex);
-			}
+		async loadPost(wui) {
+			let post = await $.Http.request('/post/normal');
+			if (!post)
+				throw $.Err.NO_NEWEST_POST();
+			this.setData({ post });
 		}
+		
 	}
 </script>
 

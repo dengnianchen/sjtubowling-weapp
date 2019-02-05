@@ -1,8 +1,7 @@
 <template>
 	<view class="app-loading">
 		<view class="app-loading__content">
-			<wui-cc src="../../images/loading.gif"
-			        text="加载中" size="120" color="#999999"></wui-cc>
+			<wui-cc image="loading" text="加载中" size="120" color="#999999"></wui-cc>
 		</view>
 	</view>
 </template>
