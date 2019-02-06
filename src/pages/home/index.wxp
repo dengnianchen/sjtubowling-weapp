@@ -14,7 +14,7 @@
 		</view>
 		<wui-panel title="最新例会记录{{post?' - ':''}}{{post.title}}"
 		           content-id="content-post">
-			<text>{{post.content}}</text>
+			<view class="post-content"><text>{{post.content}}</text></view>
 		</wui-panel>
 		<wui-panel title="排班表 - 第{{week}}周"
 		           content-id="content-schedule">
@@ -218,10 +218,8 @@
 			0 3px 10px #000000;
 	}
 	.post-content {
-		padding-right: 30px;
 		padding-top: 20px;
 		padding-bottom: 20px;
-		font-size: @fontSize__desc;
 	}
 	.schedule-table__row {
 		position: relative;
