@@ -5,12 +5,12 @@
 				<app-field id="field-password" type="password" label="密码"
 				           placeholder="密码长度应介于6至20个字符之间"
 				           maxlength="20" name="password" require="{{true}}"
-				           validate="{{[{btlength:[6,20]},{neqinitpassword:null}]}}"
+				           validate="{{ { btlength:[6,20], neqinitpassword:null } }}"
 				></app-field>
 				<app-field id="field-repassword" type="password" label="确认密码"
 				           placeholder="请再次输入密码"
 				           maxlength="20" name="repassword" require="{{true}}"
-				           validate="{{['eqpassword']}}"
+				           validate="eqpassword"
 				></app-field>
 			</view>
 		</view>
