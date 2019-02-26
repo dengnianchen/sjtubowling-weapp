@@ -27,7 +27,7 @@
     "@yapple/wui-panel": "^1.0.3",
     "he": "^1.2.0",
     "md5": "^2.2.1",
-    "miniprogram-api-typings": "^2.4.2-2",
+    "miniprogram-api-typings": "^2.4.2",
     "wafer2-client-sdk": "git+https://github.com/dengnianchen/wafer2-client-sdk.git",
     "welib": "git+https://github.com/dengnianchen/welib.git"
   },
