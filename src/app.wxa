@@ -53,56 +53,53 @@
 			},
 		},
 		globalData: {
-			config: null,
+			config,
 			style
 		},
-		onLaunch() {
-			// 定制页面加载过程，在页面加载前载入全局配置信息、检查登陆状态及用户信息完善状态
-			let pageLoading = async function() {
-				let _this = this;
-				let redirectToBind = () => wx.redirectTo({
-					url: `../bind/index?from=${_this.getPathEncoded()}`,
-				});
-				let redirectToFillInfo = () => wx.redirectTo({
-					url: `../newGuide/index?from=${_this.getPathEncoded()}`,
-				});
-				
-				// 1. 若当前不存在全局配置信息，则先加载之
-				//    全局配置信息存在app对象中，因此仅在小程序运行后的第一个页面加载时需要从服务器获取
-				if ($($.App.config).isEmpty())
-					$.App.config = await $.Http.request("/common/config");
-				
-				// 2. 尝试获取当前登陆用户
-				let user = User.current;
-				
-				// 3. 尝试登陆并获取绑定的网站用户信息
-				//    前提条件：当前页面需要登录才能访问，且当前用户不存在
-				//    若登陆失败或当前微信账号没有绑定网站账号，则跳转到登陆绑定页面
-				if (this.auth && !user) {
-					try {
-						await $.Http.login();
-					} catch (ex) {
-						return redirectToBind();
-					}
-					user = User.current;
-					if (!user)
-						return redirectToBind();
-				}
-				this.setData({ suser: user });
-				
-				// 4. 检查当前登陆用户的用户信息是否已完善，若未完善则跳转到新用户指导页面
-				//    前提条件：当前用户存在，且不在用户信息完善的过程中
-				if (user && !getApp().globalData.work && this.route !== "pages/newGuide/index") {
-					const completion = user.checkInfoCompletion();
-					for (let c of completion) {
-						if (!c)
-							return redirectToFillInfo();
-					}
-				}
-			};
+		async beforePageLoad(page) {
+			let redirectToBind = () => wx.redirectTo({
+				url: `../bind/index?from=${page.getPath()}`,
+			});
+			let redirectToFillInfo = () => wx.redirectTo({
+				url: `../newGuide/index?from=${page.getPath()}`,
+			});
 			
+			// 1. 若当前不存在全局配置信息，则先加载之
+			//    全局配置信息存在app对象中，因此仅在小程序运行后的第一个页面加载时需要从服务器获取
+			if ($($.AppData.config).isEmpty())
+				$($.AppData.config).extend(await $.Http.request("/common/config"));
+			
+			// 2. 尝试获取当前登陆用户
+			let user = User.current;
+			
+			// 3. 尝试登陆并获取绑定的网站用户信息
+			//    前提条件：当前页面需要登录才能访问，且当前用户不存在
+			//    若登陆失败或当前微信账号没有绑定网站账号，则跳转到登陆绑定页面
+			if (this.auth && !user) {
+				try {
+					await $.Http.login();
+				} catch (ex) {
+					return redirectToBind();
+				}
+				user = User.current;
+				if (!user)
+					return redirectToBind();
+			}
+			this.setData({ suser: user });
+			
+			// 4. 检查当前登陆用户的用户信息是否已完善，若未完善则跳转到新用户指导页面
+			//    前提条件：当前用户存在，且不在用户信息完善的过程中
+			if (user && !$.AppData.work && this.route !== "pages/newGuide/index") {
+				const completion = user.checkInfoCompletion();
+				for (let c of completion) {
+					if (!c)
+						return redirectToFillInfo();
+				}
+			}
+		},
+		onLaunch() {
 			// 初始化Welib库
-			$.initial($.extend(config.welib, { pageBeforeLoad: pageLoading }));
+			$.initial(this);
 		},
 		onShow() {
 		},
